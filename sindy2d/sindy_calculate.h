@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "../common.h"
-#include "../sindy2d/SindyPoint2d.h"
+#include "../sindy2d/sindy_point2d.h"
 #ifdef _DEBUG
     #include <cassert>
 #endif

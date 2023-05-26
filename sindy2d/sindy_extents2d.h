@@ -3,7 +3,7 @@
 #include <initializer_list>
 
 #include "../common.h"
-#include "../sindy2d/SindyPoint2d.h"
+#include "../sindy2d/sindy_point2d.h"
 
 namespace sindy
 {

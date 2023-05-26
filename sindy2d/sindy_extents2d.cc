@@ -1,4 +1,4 @@
-#include "SindyExtents2d.h"
+#include "sindy_extents2d.h"
 
 #include "float.h"
 
@@ -27,7 +27,8 @@ Extents2d::Extents2d(const Point2d& pt) : m_min(pt), m_max(pt)
 Extents2d::Extents2d(const std::initializer_list<Point2d>& list)
     : m_min{MY_EXTENTS_MIN, MY_EXTENTS_MIN}, m_max{MY_EXTENTS_MAX, MY_EXTENTS_MAX}
 {
-    for (const auto& point : list) addPoint(point);
+    for (const auto& point : list)
+        addPoint(point);
 }
 
 void Extents2d::reset()

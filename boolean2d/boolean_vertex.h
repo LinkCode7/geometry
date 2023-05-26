@@ -1,7 +1,7 @@
 #ifndef BOOLEAN_VERTEX_H
 #define BOOLEAN_VERTEX_H
 
-#include "../sindy2d/SindyPoint2d.h"
+#include "../sindy2d/sindy_point2d.h"
 
 namespace sindy
 {

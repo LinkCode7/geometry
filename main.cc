@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "sindy2d/SindyPoint2d.h"
+#include "sindy2d/sindy_point2d.h"
 
 // https://www.docin.com/p-1457815325.html
 int main()

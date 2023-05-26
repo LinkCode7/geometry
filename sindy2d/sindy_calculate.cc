@@ -1,6 +1,6 @@
-#include "SindyCalculate.h"
+#include "sindy_calculate.h"
 
-#include "SindyExtents2d.h"
+#include "sindy_extents2d.h"
 
 bool sindy::isPtInLine(const Point2d& a, const Point2d& b, const Point2d& c)
 {
