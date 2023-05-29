@@ -1,15 +1,13 @@
 #include "polygon_chain.h"
 
-#include <unordered_set>
-
 std::vector<Point2d> PolygonChain::doItersect(const std::vector<Point2d> &polygon1, const std::vector<Point2d> &polygon2)
 {
     std::vector<std::vector<int>> MChains1 = getMonotoneChain(polygon1);
     std::vector<std::vector<int>> MChains2 = getMonotoneChain(polygon2);
     SMC_SL(MChains1, polygon1, 1);
     SMC_SL(MChains2, polygon2, 2);
-
-    return getCrossPt(polygon1, polygon2);
+    auto result = getCrossPt(polygon1, polygon2);
+    return result;
 }
 
 std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<Point2d> &polygon)
@@ -54,7 +52,7 @@ std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<P
         std::vector<int> oneChain;
         int              idx = (left + 1) % size;
         oneChain.emplace_back(left);
-        while (true && idx % size != left)
+        while (idx % size != left)
         {
             oneChain.emplace_back(idx % size);
             if (rightExtreme.count(idx % size) != 0)  // 顺时针找到右极值点
@@ -66,7 +64,7 @@ std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<P
 
         idx = (left - 1) % size;
         oneChain.emplace_back(left);
-        while (true && (idx + size) % size != left)
+        while ((idx + size) % size != left)
         {
             oneChain.emplace_back((idx + size) % size);
             if (rightExtreme.count((idx + size) % size) != 0)  // 逆时针找到右极值点
@@ -120,6 +118,7 @@ void PolygonChain::SMC_SL(const std::vector<std::vector<int>> &chains, const std
                     SMChains.emplace_back(curChain);
 
                     addSweepLine(polygon, curChain, pFlag);
+
                     curChain.clear();
                     curChain.emplace_back(chain[(i - 1 + size) % size]);
                     curChain.emplace_back(chain[i]);
@@ -150,6 +149,7 @@ void PolygonChain::addSweepLine(const std::vector<Point2d> &polygon, const std::
 
 std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygon1, const std::vector<Point2d> &polygon2)
 {
+    std::set<std::pair<double, double>>           ptOnLines;  // 存储已经添加的端点
     std::vector<Point2d>                          CrossPts;
     std::set<std::pair<std::vector<int>, int>>    curChain;  // first为存储polygon点所在的下标，second表示属于哪个polygon
     std::vector<std::pair<std::vector<int>, int>> newChain;
@@ -204,6 +204,7 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                 {
                     std::vector<int> idxCurVec = curC.first;  // 已存在严格单调链每个点的下标
                     std::vector<int> idxNewVec = newC.first;  // 新加入严格单调链每个点的下标
+
                     for (int i = 0; i < idxCurVec.size() - 1; ++i)
                     {
                         pt1Begin = curC.second == 1 ? polygon1[idxCurVec[i]] : polygon2[idxCurVec[i]];
@@ -212,10 +213,37 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                         {
                             pt2Begin = newC.second == 1 ? polygon1[idxNewVec[j]] : polygon2[idxNewVec[j]];
                             pt2End   = newC.second == 1 ? polygon1[(idxNewVec[j] + 1) % p1size] : polygon2[(idxNewVec[j] + 1) % p2size];
-                            if (collisionDect(pt1Begin, pt1End, pt2Begin, pt2End) && crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
+                            if (collisionDect(pt1Begin, pt1End, pt2Begin, pt2End))
                             {
-                                auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
-                                CrossPts.emplace_back(crossPt);
+                                if (crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
+                                {
+                                    auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
+                                    CrossPts.emplace_back(crossPt);
+                                    continue;
+                                }
+                                else
+                                {
+                                    if (onLineDect(pt1Begin, pt2Begin, pt2End) && ptOnLines.count({pt1Begin.x(), pt1Begin.y()}) == 0)
+                                    {
+                                        ptOnLines.insert({pt1Begin.x(), pt1Begin.y()});
+                                        CrossPts.emplace_back(pt1Begin);
+                                    }
+                                    if (onLineDect(pt1End, pt2Begin, pt2End) && ptOnLines.count({pt1End.x(), pt1End.y()}) == 0)
+                                    {
+                                        ptOnLines.insert({pt1End.x(), pt1End.y()});
+                                        CrossPts.emplace_back(pt1End);
+                                    }
+                                    if (onLineDect(pt2Begin, pt1Begin, pt1End) && ptOnLines.count({pt2Begin.x(), pt2Begin.y()}) == 0)
+                                    {
+                                        ptOnLines.insert({pt2Begin.x(), pt2Begin.y()});
+                                        CrossPts.emplace_back(pt2Begin);
+                                    }
+                                    if (onLineDect(pt2End, pt1Begin, pt1End) && ptOnLines.count({pt2End.x(), pt2End.y()}) == 0)
+                                    {
+                                        ptOnLines.insert({pt2End.x(), pt2End.y()});
+                                        CrossPts.emplace_back(pt2End);
+                                    }
+                                }
                             }
                         }
                     }
@@ -226,7 +254,6 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
         // 新加入的严格单调链之间进行两两求交
         for (int i = 0; i < newChain.size() - 1; ++i)
         {
-            curChain.insert(newChain[i]);
             auto C1st = newChain[i];
             for (int j = i + 1; j < newChain.size(); ++j)
             {
@@ -271,19 +298,60 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                             {
                                 pt2Begin = C2nd.second == 1 ? polygon1[secondVec[n]] : polygon2[secondVec[n]];
                                 pt2End   = C2nd.second == 1 ? polygon1[(secondVec[n] + 1) % p1size] : polygon2[(secondVec[n] + 1) % p2size];
-                                if (collisionDect(pt1Begin, pt1End, pt2Begin, pt2End) && crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
+                                if (collisionDect(pt1Begin, pt1End, pt2Begin, pt2End))
                                 {
-                                    auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
-                                    CrossPts.emplace_back(crossPt);
+                                    if (crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
+                                    {
+                                        auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
+                                        CrossPts.emplace_back(crossPt);
+                                        continue;
+                                    }
+                                    else
+                                    {
+                                        if (onLineDect(pt1Begin, pt2Begin, pt2End) && ptOnLines.count({pt1Begin.x(), pt1Begin.y()}) == 0)
+                                        {
+                                            ptOnLines.insert({pt1Begin.x(), pt1Begin.y()});
+                                            CrossPts.emplace_back(pt1Begin);
+                                        }
+                                        if (onLineDect(pt1End, pt2Begin, pt2End) && ptOnLines.count({pt1End.x(), pt1End.y()}) == 0)
+                                        {
+                                            ptOnLines.insert({pt1End.x(), pt1End.y()});
+                                            CrossPts.emplace_back(pt1End);
+                                        }
+                                        if (onLineDect(pt2Begin, pt1Begin, pt1End) && ptOnLines.count({pt2Begin.x(), pt2Begin.y()}) == 0)
+                                        {
+                                            ptOnLines.insert({pt2Begin.x(), pt2Begin.y()});
+                                            CrossPts.emplace_back(pt2Begin);
+                                        }
+                                        if (onLineDect(pt2End, pt1Begin, pt1End) && ptOnLines.count({pt2End.x(), pt2End.y()}) == 0)
+                                        {
+                                            ptOnLines.insert({pt2End.x(), pt2End.y()});
+                                            CrossPts.emplace_back(pt2End);
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
+            // 特判垂直线段，用完就丢,否则加入到curChain中
+            if (C1st.second == 1)
+            {
+                int cSize = newChain[i].first.size();
+                if (polygon1[newChain[i].first[0]].x() != polygon1[newChain[i].first[(cSize - 1) % cSize]].x())
+                    curChain.insert(newChain[i]);
+            }
+            else
+            {
+                int cSize = newChain[i].first.size();
+                if (polygon2[newChain[i].first[0]].x() != polygon2[newChain[i].first[(cSize - 1) % cSize]].x())
+                    curChain.insert(newChain[i]);
+            }
         }
-        curChain.insert(newChain[newChain.size() - 1]);
-        newChain.clear();  // 记得清空
+        curChain.insert(newChain[newChain.size() - 1]);  // TODO:忘了这里为什么要再加最后一次
+        newChain.clear();                                // 记得清空
     }
     return CrossPts;
 }
@@ -372,4 +440,17 @@ bool PolygonChain::crossDect(const Point2d &p1, const Point2d &p2, const Point2d
     double res2 = left * right;
 
     return (res1 < 0 && res2 < 0) ? true : false;
+}
+
+bool PolygonChain::onLineDect(const Point2d &p, const Point2d &p1, const Point2d &p2)
+{
+    auto pXpl = Point2d(p1.x() - p.x(), p1.y() - p.y());
+    auto pXp2 = Point2d(p2.x() - p.x(), p2.y() - p.y());
+
+    double result = pXpl.x() * pXp2.y() - pXpl.y() * pXp2.x();
+
+    if (distance(p, p1) + distance(p, p2) == distance(p1, p2))
+        return result == 0 ? true : false;
+
+    return false;
 }
