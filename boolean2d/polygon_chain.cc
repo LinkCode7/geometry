@@ -4,13 +4,12 @@ std::vector<Point2d> PolygonChain::doItersect(const std::vector<Point2d> &polygo
 {
     std::vector<std::vector<int>> MChains1 = getMonotoneChain(polygon1);
     std::vector<std::vector<int>> MChains2 = getMonotoneChain(polygon2);
-    SMC_SL(MChains1, polygon1, 1);
-    SMC_SL(MChains2, polygon2, 2);
-    auto result = getCrossPt(polygon1, polygon2);
-    return result;
+    getSMChainSweepLine(MChains1, polygon1, 1);
+    getSMChainSweepLine(MChains2, polygon2, 2);
+    return getCrossPt(polygon1, polygon2);
 }
 
-std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<Point2d> &polygon)
+std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<Point2d> &polygon) const
 {
     int size = polygon.size();
 
@@ -79,7 +78,7 @@ std::vector<std::vector<int>> PolygonChain::getMonotoneChain(const std::vector<P
     return Chains;
 }
 
-void PolygonChain::SMC_SL(const std::vector<std::vector<int>> &chains, const std::vector<Point2d> &polygon, int pFlag)
+void PolygonChain::getSMChainSweepLine(const std::vector<std::vector<int>> &chains, const std::vector<Point2d> &polygon, int pFlag)
 {
     int                           size = polygon.size();
     std::vector<std::vector<int>> SMChains;
@@ -137,29 +136,29 @@ void PolygonChain::addSweepLine(const std::vector<Point2d> &polygon, const std::
 {
     if (pFlag == 1)
     {
-        sweepLine[polygon[curChain[0]].x()].insert({curChain, 1});
-        sweepLine[polygon[curChain[curChain.size() - 1]].x()].insert({curChain, 1});
+        m_sweepLines[polygon[curChain[0]].x()].insert({curChain, 1});
+        m_sweepLines[polygon[curChain[curChain.size() - 1]].x()].insert({curChain, 1});
     }
     else
     {
-        sweepLine[polygon[curChain[0]].x()].insert({curChain, 2});
-        sweepLine[polygon[curChain[curChain.size() - 1]].x()].insert({curChain, 2});
+        m_sweepLines[polygon[curChain[0]].x()].insert({curChain, 2});
+        m_sweepLines[polygon[curChain[curChain.size() - 1]].x()].insert({curChain, 2});
     }
 }
 
-std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygon1, const std::vector<Point2d> &polygon2)
+std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygon1, const std::vector<Point2d> &polygon2) const
 {
     std::set<std::pair<double, double>>           ptOnLines;  // 存储已经添加的端点
-    std::vector<Point2d>                          CrossPts;
+    std::vector<Point2d>                          crossPts;
     std::set<std::pair<std::vector<int>, int>>    curChain;  // first为存储polygon点所在的下标，second表示属于哪个polygon
     std::vector<std::pair<std::vector<int>, int>> newChain;
     int                                           p1size = polygon1.size();
     int                                           p2size = polygon2.size();
 
-    for (auto &sL : sweepLine)
+    for (auto &sweepLine : m_sweepLines)
     {
         // 清除右极值点过该扫描线的严格单调链, 加入左极值点过该扫描线的严格单调链
-        for (auto &chain : sL.second)
+        for (auto &chain : sweepLine.second)
         {
             auto check = curChain.find(chain);
             if (check != curChain.end())
@@ -218,7 +217,7 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                                 if (crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
                                 {
                                     auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
-                                    CrossPts.emplace_back(crossPt);
+                                    crossPts.emplace_back(crossPt);
                                     continue;
                                 }
                                 else
@@ -226,22 +225,22 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                                     if (onLineDect(pt1Begin, pt2Begin, pt2End) && ptOnLines.count({pt1Begin.x(), pt1Begin.y()}) == 0)
                                     {
                                         ptOnLines.insert({pt1Begin.x(), pt1Begin.y()});
-                                        CrossPts.emplace_back(pt1Begin);
+                                        crossPts.emplace_back(pt1Begin);
                                     }
                                     if (onLineDect(pt1End, pt2Begin, pt2End) && ptOnLines.count({pt1End.x(), pt1End.y()}) == 0)
                                     {
                                         ptOnLines.insert({pt1End.x(), pt1End.y()});
-                                        CrossPts.emplace_back(pt1End);
+                                        crossPts.emplace_back(pt1End);
                                     }
                                     if (onLineDect(pt2Begin, pt1Begin, pt1End) && ptOnLines.count({pt2Begin.x(), pt2Begin.y()}) == 0)
                                     {
                                         ptOnLines.insert({pt2Begin.x(), pt2Begin.y()});
-                                        CrossPts.emplace_back(pt2Begin);
+                                        crossPts.emplace_back(pt2Begin);
                                     }
                                     if (onLineDect(pt2End, pt1Begin, pt1End) && ptOnLines.count({pt2End.x(), pt2End.y()}) == 0)
                                     {
                                         ptOnLines.insert({pt2End.x(), pt2End.y()});
-                                        CrossPts.emplace_back(pt2End);
+                                        crossPts.emplace_back(pt2End);
                                     }
                                 }
                             }
@@ -303,7 +302,7 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                                     if (crossDect(pt1Begin, pt1End, pt2Begin, pt2End))
                                     {
                                         auto crossPt = calcCrossPt(pt1Begin, pt1End, pt2Begin, pt2End);
-                                        CrossPts.emplace_back(crossPt);
+                                        crossPts.emplace_back(crossPt);
                                         continue;
                                     }
                                     else
@@ -311,22 +310,22 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                                         if (onLineDect(pt1Begin, pt2Begin, pt2End) && ptOnLines.count({pt1Begin.x(), pt1Begin.y()}) == 0)
                                         {
                                             ptOnLines.insert({pt1Begin.x(), pt1Begin.y()});
-                                            CrossPts.emplace_back(pt1Begin);
+                                            crossPts.emplace_back(pt1Begin);
                                         }
                                         if (onLineDect(pt1End, pt2Begin, pt2End) && ptOnLines.count({pt1End.x(), pt1End.y()}) == 0)
                                         {
                                             ptOnLines.insert({pt1End.x(), pt1End.y()});
-                                            CrossPts.emplace_back(pt1End);
+                                            crossPts.emplace_back(pt1End);
                                         }
                                         if (onLineDect(pt2Begin, pt1Begin, pt1End) && ptOnLines.count({pt2Begin.x(), pt2Begin.y()}) == 0)
                                         {
                                             ptOnLines.insert({pt2Begin.x(), pt2Begin.y()});
-                                            CrossPts.emplace_back(pt2Begin);
+                                            crossPts.emplace_back(pt2Begin);
                                         }
                                         if (onLineDect(pt2End, pt1Begin, pt1End) && ptOnLines.count({pt2End.x(), pt2End.y()}) == 0)
                                         {
                                             ptOnLines.insert({pt2End.x(), pt2End.y()});
-                                            CrossPts.emplace_back(pt2End);
+                                            crossPts.emplace_back(pt2End);
                                         }
                                     }
                                 }
@@ -350,13 +349,13 @@ std::vector<Point2d> PolygonChain::getCrossPt(const std::vector<Point2d> &polygo
                     curChain.insert(newChain[i]);
             }
         }
-        curChain.insert(newChain[newChain.size() - 1]);  // TODO:忘了这里为什么要再加最后一次
-        newChain.clear();                                // 记得清空
+        curChain.insert(newChain[newChain.size() - 1]);
+        newChain.clear();  // 记得清空
     }
-    return CrossPts;
+    return crossPts;
 }
 
-Point2d PolygonChain::calcCrossPt(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4)
+Point2d PolygonChain::calcCrossPt(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4) const
 {
     double slope1 = 0;
     double slope2 = 0;
@@ -398,7 +397,7 @@ Point2d PolygonChain::calcCrossPt(const Point2d &p1, const Point2d &p2, const Po
     return Point2d(resX, resY);
 }
 
-bool PolygonChain::collisionDect(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4)
+bool PolygonChain::collisionDect(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4) const
 {
     double x1max = std::max(p1.x(), p2.x());
     double x1min = std::min(p1.x(), p2.x());
@@ -423,7 +422,7 @@ bool PolygonChain::collisionDect(const Point2d &p1, const Point2d &p2, const Poi
     return checkX && checkY;
 }
 
-bool PolygonChain::crossDect(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4)
+bool PolygonChain::crossDect(const Point2d &p1, const Point2d &p2, const Point2d &p3, const Point2d &p4) const
 {
     auto   p1p3  = Point2d(p3.x() - p1.x(), p3.y() - p1.y());
     auto   p1p2  = Point2d(p2.x() - p1.x(), p2.y() - p1.y());
@@ -442,7 +441,7 @@ bool PolygonChain::crossDect(const Point2d &p1, const Point2d &p2, const Point2d
     return (res1 < 0 && res2 < 0) ? true : false;
 }
 
-bool PolygonChain::onLineDect(const Point2d &p, const Point2d &p1, const Point2d &p2)
+bool PolygonChain::onLineDect(const Point2d &p, const Point2d &p1, const Point2d &p2) const
 {
     auto pXpl = Point2d(p1.x() - p.x(), p1.y() - p.y());
     auto pXp2 = Point2d(p2.x() - p.x(), p2.y() - p.y());
