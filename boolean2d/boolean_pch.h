@@ -7,6 +7,7 @@
 #include <boost/geometry/geometries/polygon.hpp>
 #include <boost/geometry/geometries/segment.hpp>
 #include <iostream>
+#include <memory>
 
 namespace bg = boost::geometry;
 
@@ -24,3 +25,5 @@ enum class Axis : int
 
 const double EPS       = 0.0000001;
 const double SMALL_EPS = 0.00000001;
+
+#define IS_FLOAT_EQUAL(a, b) (((a - b) < EPS) && ((b - a) < EPS))

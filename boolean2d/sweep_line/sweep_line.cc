@@ -1,45 +1,18 @@
 #include "sweep_line.h"
 
-SweepLine::SweepLine(std::vector<segment_2d>& segmentVec)
+SweepLine::SweepLine(std::vector<segment_2d>& originalSegments)
 {
-    ResetSegmentsPoints(segmentVec);
+    // 调整起始点
+    ResetSegmentsPoints(originalSegments);
 
-    std::vector<Segment2d> processedSegments;
-    for (auto& segment : segmentVec)
+    for (auto& segment : originalSegments)
     {
-        processedSegments.emplace_back(Segment2d(segment));
-        m_allCrossPoints.emplace(segment.first);
-        m_allCrossPoints.emplace(segment.second);
-    }
-
-    for (auto& segment : processedSegments)
-    {
-        m_pointQueue.emplace(PointEvent(segment.GetSegment().first, EventType::StartPoint, segment));
-        m_pointQueue.emplace(PointEvent(segment.GetSegment().second, EventType::EndPoint, segment));
-    }
-}
-
-// 默认输入的线段第一个点是起点，第二个点是终点，因此要输入已经处理过的线段
-SweepLine::SweepLine(std::vector<Segment2d>& segmentVec)
-{
-    for (auto& segment : segmentVec)
-    {
-        m_pointQueue.emplace(PointEvent(segment.GetSegment().first, EventType::StartPoint, segment));
-        m_pointQueue.emplace(PointEvent(segment.GetSegment().second, EventType::EndPoint, segment));
-        m_allCrossPoints.emplace(segment.GetSegment().first);
-        m_allCrossPoints.emplace(segment.GetSegment().second);
-    }
-}
-
-void SweepLine::PrintPointQueue()
-{
-    while (!m_pointQueue.empty())
-    {
-        PointEvent pointEvent = m_pointQueue.top();
-        m_pointQueue.pop();
-
-        std::cout << bg::get<0>(pointEvent.GetPoint()) << " " << bg::get<1>(pointEvent.GetPoint()) << std::endl;
-        std::cout << pointEvent.GetSegments()[0] << std::endl;
+        PointEvent startPointEvent(segment.first, EventType::StartPoint);
+        PointEvent endPointEvent(segment.second, EventType::EndPoint);
+        startPointEvent.setOtherEvent(endPointEvent);
+        endPointEvent.setOtherEvent(startPointEvent);
+        m_pointQueue.emplace(startPointEvent);
+        m_pointQueue.emplace(endPointEvent);
     }
 }
 
@@ -86,25 +59,123 @@ void SweepLine::ResetSegmentsPoints(std::vector<segment_2d>& segments)
 
 void SweepLine::UpdateSegmentTree(double sweepLineXPos, double sweepLineYPos)
 {
-    // TODO: 这里应该能优化
     for (auto it = m_segmentTree.begin(); it != m_segmentTree.end(); it++)
     {
-        (const_cast<Segment2d&>(*it)).UpdateSweepLineCrossPoint(sweepLineXPos, sweepLineYPos);
+        (const_cast<Segment2d&>(*it)).updateSweepLineCrossPoint(sweepLineXPos, sweepLineYPos);
     }
 }
 
 void SweepLine::EmplaceCrossPoint(int& a, int& b)
 {
-    std::vector<point_2d> crossPoint;
-    bg::intersection(m_segmentTree[a].GetSegment(), m_segmentTree[b].GetSegment(), crossPoint);
+    std::vector<point_2d> crossPoints;
+    bg::intersection(m_segmentTree[a].getSegment(), m_segmentTree[b].getSegment(), crossPoints);
+    if (crossPoints.size() == 0)
+        return;
 
-    for (auto& point : crossPoint)
+    // TODO: 不知道 crossPoint 是否已经排序，不过其实只要 swap() 一下最多了
+    // 排序至与 m_priorityQueue 同序
+    std::sort(crossPoints.begin(), crossPoints.end(), [](point_2d const& a, point_2d const& b) -> bool {
+        if (!IS_FLOAT_EQUAL(bg::get<0>(a), bg::get<0>(b)))
+            return bg::get<0>(a) < bg::get<0>(b);
+        else
+            return bg::get<1>(a) < bg::get<1>(b);
+    });
+
+    // 取数据
+    point_2d   crossPoint       = crossPoints[0];
+    Segment2d  segmentA         = m_segmentTree[a];
+    PointEvent aStartPointEvent = segmentA.getStartPointEvent();       // 会变
+    PointEvent aEndPointEvent   = *(aStartPointEvent.getOtherEvent()); // 不变
+    Segment2d  segmentB         = m_segmentTree[b];
+    PointEvent bStartPointEvent = segmentB.getStartPointEvent();       // 会变
+    PointEvent bEndPointEvent   = *(bStartPointEvent.getOtherEvent()); // 不变
+
+    // 裁剪线段
+    for (int i = 0; i < crossPoints.size(); i++)
     {
-        if (m_allCrossPoints.find(point) == m_allCrossPoints.end())
+        m_allCrossPoints.emplace(crossPoints[i]);
+        crossPoint = crossPoints[i];
+        PointEvent crossPointEvent(crossPoint, EventType::EndPoint);
+
+        // 不是 a 的起点或终点
+        if ((!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentA.getSegment().first)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentA.getSegment().first))) &&
+            (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentA.getSegment().second)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentA.getSegment().second))))
         {
-            m_allCrossPoints.emplace(point);
-            m_pointQueue.emplace(PointEvent(point, EventType::CrossPoint, Segment2d(m_segmentTree[a].GetSegment()),
-                                            Segment2d(m_segmentTree[b].GetSegment())));
+            aStartPointEvent.setEventType(EventType::StartPoint);
+            aStartPointEvent.setOtherEvent(crossPointEvent);
+            crossPointEvent.setOtherEvent(aStartPointEvent);
+
+            // 只有第二个交点需要加起始点
+            if (i == 1)
+                m_pointQueue.emplace(aStartPointEvent);
+            m_pointQueue.emplace(crossPointEvent);
+
+            // 只有第一个交点需要裁剪线段
+            if (i == 0)
+            {
+                m_segmentTree[a].setStartPointEvent(aStartPointEvent);
+                m_segmentTree[a].setSegmentSecond(crossPointEvent.getPoint());
+            }
+
+            // 更新 startPointEvent
+            aStartPointEvent = crossPointEvent;
+        }
+
+        // 不是 b 的起点或终点
+        if ((!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentB.getSegment().first)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentB.getSegment().first))) &&
+            (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentB.getSegment().second)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentB.getSegment().second))))
+        {
+            bStartPointEvent.setEventType(EventType::StartPoint);
+            bStartPointEvent.setOtherEvent(crossPointEvent);
+            crossPointEvent.setOtherEvent(bStartPointEvent);
+
+            // 只有第二个交点需要加起始点
+            if (i == 1)
+                m_pointQueue.emplace(bStartPointEvent);
+            m_pointQueue.emplace(crossPointEvent);
+
+            // 只有第一个交点需要裁剪线段
+            if (i == 0)
+            {
+                m_segmentTree[b].setStartPointEvent(bStartPointEvent);
+                m_segmentTree[b].setSegmentSecond(crossPointEvent.getPoint());
+            }
+
+            // 更新 startPointEvent
+            bStartPointEvent = crossPointEvent;
+        }
+    }
+
+    // 添加最后一段
+    {
+        // 不是 a 的起点或终点
+        if ((!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentA.getSegment().first)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentA.getSegment().first))) &&
+            (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentA.getSegment().second)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentA.getSegment().second))))
+        {
+            aStartPointEvent.setOtherEvent(aEndPointEvent);
+            aStartPointEvent.setEventType(EventType::StartPoint);
+            aEndPointEvent.setOtherEvent(aStartPointEvent);
+            m_pointQueue.emplace(aStartPointEvent);
+            m_pointQueue.emplace(aEndPointEvent);
+        }
+
+        // 不是 b 的起点或终点
+        if ((!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentB.getSegment().first)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentB.getSegment().first))) &&
+            (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentB.getSegment().second)) ||
+             !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentB.getSegment().second))))
+        {
+            bStartPointEvent.setOtherEvent(bEndPointEvent);
+            bStartPointEvent.setEventType(EventType::StartPoint);
+            bEndPointEvent.setOtherEvent(bStartPointEvent);
+            m_pointQueue.emplace(bStartPointEvent);
+            m_pointQueue.emplace(bEndPointEvent);
         }
     }
 }
@@ -116,47 +187,51 @@ void SweepLine::Scan()
         PointEvent pointEvent = m_pointQueue.top();
         m_pointQueue.pop();
 
-        // std::cout << "(" << bg::get<0>(pointEvent.GetPoint()) << ", " << bg::get<1>(pointEvent.GetPoint()) << ") "
-        //           << static_cast<std::underlying_type<EventType>::type>(pointEvent.GetEventType())
-        //           << " Line1: " << pointEvent.GetSegments()[0] << " Line2: " << pointEvent.GetSegments()[1] << std::endl;
+        // std::cout << "(" << bg::get<0>(pointEvent.getPoint()) << ", " << bg::get<1>(pointEvent.getPoint()) << ") "
+        //           << static_cast<std::underlying_type<EventType>::type>(pointEvent.getEventType()) << " ("
+        //           << bg::get<0>(pointEvent.getOtherEvent()->getPoint()) << ", " << bg::get<1>(pointEvent.getOtherEvent()->getPoint())
+        //           << ") " << std::endl;
 
         // 更新所有线段的排序标准
-        m_sweepLineXPos = bg::get<0>(pointEvent.GetPoint());
-        UpdateSegmentTree(m_sweepLineXPos, bg::get<1>(pointEvent.GetPoint()));
+        m_sweepLineXPos = bg::get<0>(pointEvent.getPoint());
+        UpdateSegmentTree(m_sweepLineXPos, bg::get<1>(pointEvent.getPoint()));
 
         // 点类型
-        if (pointEvent.GetEventType() == EventType::StartPoint)
+        if (pointEvent.getEventType() == EventType::StartPoint)
         {
             // 起点
             // 加入线段，并与其左右两条判交
 
-            // 去重
-            int i;
-            for (i = 0; i < m_segmentTree.size(); i++)
-            {
-                if (m_segmentTree[i] == pointEvent.GetSegments()[0])
-                    break;
-            }
-            if (i == m_segmentTree.size())
-                m_segmentTree.emplace_back(pointEvent.GetSegments()[0]);
-            else
-                continue;
+            //// 去重
+            // int i;
+            // for (i = 0; i < m_segmentTree.size(); i++)
+            //{
+            //     if (m_segmentTree[i] == pointEvent.GetSegments()[0])
+            //         break;
+            // }
+            // if (i == m_segmentTree.size())
+            //     m_segmentTree.emplace_back(pointEvent.GetSegments()[0]);
+            // else
+            //     continue;
+
+            Segment2d tmpSegment2d(pointEvent, *(pointEvent.getOtherEvent()));
+            m_segmentTree.emplace_back(tmpSegment2d);
 
             sort(m_segmentTree.begin(), m_segmentTree.end(), [](Segment2d& a, Segment2d& b) -> bool {
                 // SweepLineCrossPoint.x 肯定一样
-                if (!(abs(bg::get<1>(a.GetSweepLineCrossPoint()) - bg::get<1>(b.GetSweepLineCrossPoint())) < EPS))
-                    return bg::get<1>(a.GetSweepLineCrossPoint()) < bg::get<1>(b.GetSweepLineCrossPoint());
-                else if (!(abs(bg::get<1>(a.GetSegment().second) != bg::get<1>(b.GetSegment().second)) < EPS))
-                    return bg::get<1>(a.GetSegment().second) < bg::get<1>(b.GetSegment().second);
+                if (!IS_FLOAT_EQUAL(bg::get<1>(a.getSweepLineCrossPoint()), bg::get<1>(b.getSweepLineCrossPoint())))
+                    return bg::get<1>(a.getSweepLineCrossPoint()) < bg::get<1>(b.getSweepLineCrossPoint());
+                else if (!IS_FLOAT_EQUAL(bg::get<1>(a.getSegment().second), bg::get<1>(b.getSegment().second)))
+                    return bg::get<1>(a.getSegment().second) < bg::get<1>(b.getSegment().second);
                 else
-                    return bg::get<0>(a.GetSegment().second) < bg::get<0>(b.GetSegment().second);
+                    return bg::get<0>(a.getSegment().second) < bg::get<0>(b.getSegment().second);
             });
 
             // 查找线段位置
             int it;
             for (int i = 0; i < m_segmentTree.size(); i++)
             {
-                if (pointEvent.GetSegments()[0] == m_segmentTree[i])
+                if (tmpSegment2d == m_segmentTree[i])
                 {
                     it = i;
                     break;
@@ -172,16 +247,20 @@ void SweepLine::Scan()
             if (prevIt != -1)
                 EmplaceCrossPoint(it, prevIt);
         }
-        else if (pointEvent.GetEventType() == EventType::EndPoint)
+        else
         {
             // 终点
             // 线段左右判交，并删除线段
 
+            Segment2d tmpSegment2d(pointEvent, *pointEvent.getOtherEvent());
+
             int it;
+
+            // 如果能找到
             int i;
             for (i = 0; i < m_segmentTree.size(); i++)
             {
-                if (pointEvent.GetSegments()[0] == m_segmentTree[i])
+                if (tmpSegment2d == m_segmentTree[i])
                 {
                     it = i;
                     break;
@@ -198,71 +277,6 @@ void SweepLine::Scan()
                 EmplaceCrossPoint(prevIt, nextIt);
 
             m_segmentTree.erase(m_segmentTree.begin() + it);
-        }
-        else
-        {
-            // 交点
-            // 线段各自跟左右求交，再交换位置
-
-            // 只要先处理交点再处理终点就不会出现找不到线段的情况
-            int firstSegmentIt = 0;
-            int i;
-            for (i = 0; i < m_segmentTree.size(); i++)
-            {
-                if (pointEvent.GetSegments()[0] == m_segmentTree[i])
-                {
-                    firstSegmentIt = i;
-                    break;
-                }
-            }
-            // if (i == m_segmentTree.size())
-            //     continue;
-
-            int secondSegmentIt = 0;
-            for (i = 0; i < m_segmentTree.size(); i++)
-            {
-                if (pointEvent.GetSegments()[1] == m_segmentTree[i])
-                {
-                    secondSegmentIt = i;
-                    break;
-                }
-            }
-            // if (i == m_segmentTree.size())
-            //     continue;
-
-            //// 起点不交换
-            // if (bg::get<0>(m_segmentTree[firstSegmentIt].GetSegment().first) == m_sweepLineXPos &&
-            //     bg::get<0>(m_segmentTree[secondSegmentIt].GetSegment().first) == m_sweepLineXPos)
-            //     continue;
-
-            if (firstSegmentIt + 1 == secondSegmentIt)
-            {
-                auto nextIt = secondSegmentIt + 1;
-                // nextIt 存在
-                if (nextIt != m_segmentTree.size())
-                    EmplaceCrossPoint(nextIt, firstSegmentIt);
-
-                auto prevIt = firstSegmentIt - 1;
-                // prevIt 存在
-                if (prevIt != -1)
-                    EmplaceCrossPoint(prevIt, secondSegmentIt);
-            }
-            else
-            {
-                auto prevIt = secondSegmentIt - 1;
-                // prevIt 存在
-                if (prevIt != -1)
-                    EmplaceCrossPoint(prevIt, firstSegmentIt);
-
-                auto nextIt = firstSegmentIt + 1;
-                // nextIt 存在
-                if (nextIt != m_segmentTree.size())
-                    EmplaceCrossPoint(nextIt, secondSegmentIt);
-            }
-
-            Segment2d tmpSegment           = m_segmentTree[firstSegmentIt];
-            m_segmentTree[firstSegmentIt]  = m_segmentTree[secondSegmentIt];
-            m_segmentTree[secondSegmentIt] = tmpSegment;
         }
 
         // PrintSegmentTree();

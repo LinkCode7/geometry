@@ -14,6 +14,10 @@ if(MSVC)
     )
 endif()
 
+# 栈不够了
+MATH(EXPR stack_size "102400000")
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--stack,${stack_size}")
+
 # 设置输出路径，dll和exe必须在同一目录，否则运行时无法继续执行
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
