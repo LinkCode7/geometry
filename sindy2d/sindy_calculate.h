@@ -26,7 +26,11 @@ int intersectionPoint(const Point2d& a, const Point2d& b, const Point2d& c, cons
 inline bool isEqual(double val1, double val2, double epsilon)
 {
     double diff = val1 - val2;
+
+#ifdef _DEBUG
     assert(((-epsilon <= diff) && (diff <= epsilon)) == (abs(diff) <= epsilon));
+#endif
+
     return ((-epsilon <= diff) && (diff <= epsilon));
 }
 
@@ -48,13 +52,13 @@ inline int compare(double src1, double src2, double tol = SINDY_ZERO)
 {
     double dblSub = src1 - src2;
     if (getAbs(dblSub) <= tol)
-        return 0;  // 相同
+        return 0; // 相同
     else if (dblSub > tol)
         return 1;
     else
         return -1;
 }
 
-}  // namespace sindy
+} // namespace sindy
 
-#endif  // !SINDY_CALCULATE_H
+#endif // !SINDY_CALCULATE_H
