@@ -1,7 +1,10 @@
 #ifndef SINDY_POINT_H
 #define SINDY_POINT_H
 
+#include <math.h>
+
 #define SINDY_DEFAULT_POINT_VAL 0.0
+#define PRECISION 1e-8
 
 namespace sindy
 {
@@ -21,6 +24,13 @@ public:
         _x = other._x;
         _y = other._y;
         return *this;
+    }
+
+    bool operator==(const Point2d& other) const
+    {
+        if (fabs(this->_x - other._x) <= PRECISION && fabs(this->_y - other._y) <= PRECISION)
+            return true;
+        return false;
     }
 
     inline double& x() { return _x; }
