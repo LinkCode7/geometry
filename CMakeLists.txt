@@ -3,12 +3,24 @@ project(geometry)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# add_definitions ( -D_UNICODE )
+# add_definitions ( -D_MBCS )e
+
+if(MSVC)
+    add_compile_options(
+        $<$<CONFIG:>:/MD> #---------|
+        $<$<CONFIG:Debug>:/MD> #---|-- Statically link the runtime libraries
+        $<$<CONFIG:Release>:/MD> #--|
+    )
+endif()
+
 # 设置输出路径，dll和exe必须在同一目录，否则运行时无法继续执行
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
 file(GLOB SRC
        ${PROJECT_SOURCE_DIR}/*.cc
        ${PROJECT_SOURCE_DIR}/boolean2d/*.cc
+       ${PROJECT_SOURCE_DIR}/boolean2d/sweep_line/*.cc
        ${PROJECT_SOURCE_DIR}/geo2d/*.cc
        ${PROJECT_SOURCE_DIR}/sindy2d/*.cc
        ${PROJECT_SOURCE_DIR}/test/*.cc)
@@ -19,9 +31,13 @@ add_executable(${PROJECT_NAME} ${SRC})
 
 #add_subdirectory(test)
 
+# TODO: Python
+target_include_directories(geometry PUBLIC "C://Program Files//Python311//include")
+target_link_directories(geometry PUBLIC "C://Program Files//Python311//libs")
+
 # boost
-set(Boost_INCLUDE_DIR "..//boost_1_79_0")
-set(Boost_LIBRARY_DIRS "..//boost_1_79_0//lib")
+set(Boost_INCLUDE_DIR "C://Boost//boost_1_81_0")
+set(Boost_LIBRARY_DIRS "C://Boost//x64-All//lib")
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIRS})
@@ -46,4 +62,3 @@ endif()
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         ${GOOGLE_TEST_DLLS} $<TARGET_FILE_DIR:${PROJECT_NAME}>)
-
