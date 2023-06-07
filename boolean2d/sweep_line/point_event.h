@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../boolean_pch.h"
-#include "point2d.h"
 
 enum class EventType : int
 {
@@ -32,7 +31,11 @@ public:
     {
         m_otherEvent = new PointEvent(other.m_otherEvent->m_point2d, other.m_otherEvent->m_eventType, other.m_otherEvent->m_otherEvent);
     }
-    ~PointEvent() {}
+    ~PointEvent()
+    {
+        // if (m_otherEvent)
+        //     delete m_otherEvent;
+    }
 
     bool operator==(const PointEvent& other) const;
     bool operator<(const PointEvent& other) const;
@@ -40,9 +43,10 @@ public:
 
     inline point_2d    getPoint() const { return m_point2d; };
     inline EventType   getEventType() const { return m_eventType; };
-    inline void        setEventType(EventType eventType) { m_eventType = eventType; }
     inline PointEvent* getOtherEvent() const { return m_otherEvent; };
-    inline void        setOtherEvent(PointEvent& otherEvent) { m_otherEvent = &otherEvent; };
+
+    inline void setEventType(EventType eventType) { m_eventType = eventType; }
+    inline void setOtherEvent(PointEvent& otherEvent) { m_otherEvent = &otherEvent; };
 
 private:
     point_2d    m_point2d;
