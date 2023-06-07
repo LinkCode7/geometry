@@ -33,13 +33,14 @@ public:
     }
     ~PointEvent()
     {
+        // TODO: 不知道为什么不能删，删了就报错
         // if (m_otherEvent)
         //     delete m_otherEvent;
     }
 
-    bool operator==(const PointEvent& other) const;
-    bool operator<(const PointEvent& other) const;
-    bool operator>(const PointEvent& other) const;
+    bool operator==(PointEvent const& other) const;
+    bool operator<(PointEvent const& other) const;
+    bool operator>(PointEvent const& other) const;
 
     inline point_2d    getPoint() const { return m_point2d; };
     inline EventType   getEventType() const { return m_eventType; };
@@ -49,7 +50,7 @@ public:
     inline void setOtherEvent(PointEvent& otherEvent) { m_otherEvent = &otherEvent; };
 
 private:
-    point_2d    m_point2d;
-    EventType   m_eventType;
-    PointEvent* m_otherEvent;
+    point_2d    m_point2d;    // 该点
+    EventType   m_eventType;  // 点的类型
+    PointEvent* m_otherEvent; // 另一个相连的点
 };

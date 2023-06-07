@@ -85,15 +85,8 @@ std::ostream& operator<<(std::ostream& out, Segment2d const& other)
     return out;
 }
 
-// std::ostream& operator<<(std::ostream& out, const Segment2d& other)
-//{
-//     out << "x1: " << bg::get<0, 0>(other.m_segment2d) << ", y1: " << bg::get<0, 1>(other.m_segment2d)
-//         << ", x2: " << bg::get<1, 0>(other.m_segment2d) << ", y2: " << bg::get<1, 1>(other.m_segment2d);
-//     return out;
-// }
-
 // 默认扫描线垂直 x 轴，从左到右，不好改扫描线方向，改的话比较函数也要一起改
-void Segment2d::updateSweepLineCrossPoint(double const x, double const y)
+void Segment2d::updateSweepLineCrossPoint(double x, double y)
 {
     if (m_isNoK)
     {

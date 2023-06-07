@@ -35,10 +35,6 @@ add_executable(${PROJECT_NAME} ${SRC})
 
 #add_subdirectory(test)
 
-# TODO: Python
-target_include_directories(geometry PUBLIC "C://Program Files//Python311//include")
-target_link_directories(geometry PUBLIC "C://Program Files//Python311//libs")
-
 # boost
 set(Boost_INCLUDE_DIR "C://Boost//boost_1_81_0")
 set(Boost_LIBRARY_DIRS "C://Boost//x64-All//lib")

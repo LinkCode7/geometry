@@ -23,23 +23,25 @@ public:
     bool      operator<(Segment2d const& other) const;
     bool      operator>(Segment2d const& other) const;
 
-    // friend std::ostream& operator<<(std::ostream& out, Segment2d& other);
     friend std::ostream& operator<<(std::ostream& out, Segment2d const& other);
 
     inline segment_2d getSegment() const { return m_segment2d; }
-    inline void       setSegmentSecond(point_2d second) { m_segment2d.second = second; };
-    inline void       setSegmentSecond(PointEvent secondPointEvent) { m_segment2d.second = secondPointEvent.getPoint(); };
     inline PointEvent getStartPointEvent() const { return m_startPointEvent; }
-    inline void       setStartPointEvent(PointEvent startPointEvent) { m_startPointEvent = startPointEvent; }
     inline point_2d   getSweepLineCrossPoint() const { return m_sweepLineCrossPoint; }
     inline bool       getIsNoK() const { return m_isNoK; }
 
-    void updateSweepLineCrossPoint(double const x, double const y);
+    inline void setSegmentSecond(point_2d const& second) { m_segment2d.second = second; };
+    inline void setSegmentSecond(PointEvent const& secondPointEvent) { m_segment2d.second = secondPointEvent.getPoint(); };
+    inline void setStartPointEvent(PointEvent startPointEvent) { m_startPointEvent = startPointEvent; } // TODO: 不知道为什么加 & 会报错
+
+public:
+    // TODO: 应该设成 private: 的，不过要先给树设个友元
+    void updateSweepLineCrossPoint(double x, double y);
 
 private:
-    segment_2d m_segment2d;
-    PointEvent m_startPointEvent;
-    point_2d   m_sweepLineCrossPoint;
-    double     m_k;
-    bool       m_isNoK;
+    segment_2d m_segment2d;           // 该线段，优化的时候可以考虑去掉这个变量
+    PointEvent m_startPointEvent;     // 起点事件，用来查找另一点的事件
+    point_2d   m_sweepLineCrossPoint; // 与扫描线的交点，用来排序
+    double     m_k;                   // 斜率
+    bool       m_isNoK;               // 是否平行扫描线（扫描线默认垂直 x 轴）
 };
