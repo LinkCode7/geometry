@@ -2,7 +2,7 @@
 
 #include "boolean_pch.h"
 
-point2d_unordered_set GeometryIntersection(std::vector<polygon_2d> const& polygons)
+inline point2d_unordered_set GeometryIntersection(std::vector<polygon_2d> const& polygons)
 {
     // 尽量保持整体数据结构的相似
     point2d_unordered_set allCrossPoints;

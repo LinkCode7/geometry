@@ -53,8 +53,8 @@ float area2D_Polygon(int n, Point* V);
 //          Point* V = an array of n+1 points in a 2D plane with V[n]=V[0]
 //          Point N = a normal vector of the polygon's plane
 //  Return: the (float) area of the polygon
-float area3D_Polygon(int n, Point* V, Point N);
+float area3D_Polygon(int n, Point* V, const Point& N);
 
-}  // namespace sindy
+} // namespace sindy
 
-#endif  // !SINDY_ALGORITHM_H
+#endif // !SINDY_ALGORITHM_H

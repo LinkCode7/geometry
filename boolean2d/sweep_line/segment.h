@@ -28,9 +28,13 @@ public:
     inline point_2d   getSweepLineCrossPoint() const { return m_sweepLineCrossPoint; }
     inline bool       getIsNoK() const { return m_isNoK; }
 
-    inline void setSegmentSecond(point_2d const& second) { m_segment2d.second = second; };
-    inline void setSegmentSecond(PointEvent const& secondPointEvent) { m_segment2d.second = secondPointEvent.getPoint(); };
-    inline void setStartPointEvent(PointEvent startPointEvent) { m_startPointEvent = startPointEvent; } // TODO: 不知道为什么加 & 会报错
+    inline void setSegmentSecond(point_2d const& second) { m_segment2d.second = second; }
+    inline void setSegmentSecond(PointEvent const& secondPointEvent) { m_segment2d.second = secondPointEvent.getPoint(); }
+
+    inline void setStartPointEvent(const PointEvent& startPointEvent)
+    {
+        m_startPointEvent = startPointEvent;
+    } // TODO: 不知道为什么加 & 会报错
 
 public:
     // TODO: 应该设成 private: 的，不过要先给树设个友元

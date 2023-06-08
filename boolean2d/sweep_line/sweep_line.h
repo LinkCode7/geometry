@@ -19,8 +19,8 @@ public:
 
 private:
     // 预处理函数
-    void                    resetSegmentsPoints(std::vector<segment_2d>& segments);
-    std::vector<segment_2d> disjointPolygons(std::vector<polygon_2d> const& polygonVec);
+    void                    resetSegmentsPoints(std::vector<segment_2d>& segments) const;
+    std::vector<segment_2d> disjointPolygons(std::vector<polygon_2d> const& polygonVec) const;
 
     void updateSegmentTree(double sweepLineXPos, double sweepLineYPos);
     void emplaceCrossPoint(int& a, int& b); // 用引用是为了改成红黑树的时候方便

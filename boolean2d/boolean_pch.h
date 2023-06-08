@@ -26,9 +26,9 @@ enum class Axis : int
 };
 
 // 浮点精度
-const double EPS       = 0.0000001;
-const double SMALL_EPS = 0.00000001;
-#define IS_FLOAT_EQUAL(a, b) (((a - b) < EPS) && ((b - a) < EPS))
+constexpr double EPS       = 0.0000001;
+constexpr double SMALL_EPS = 0.00000001;
+#define IS_FLOAT_EQUAL(a, b) ((((a) - (b)) < EPS) && (((b) - (a)) < EPS))
 
 #pragma region 存交点的容器
 

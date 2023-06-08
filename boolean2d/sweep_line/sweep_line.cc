@@ -40,9 +40,9 @@ SweepLine::SweepLine(std::vector<segment_2d>& segmentVec)
 }
 
 // 对换点，保证第一个点是起始点，第二个点是终点
-void SweepLine::resetSegmentsPoints(std::vector<segment_2d>& segments)
+void SweepLine::resetSegmentsPoints(std::vector<segment_2d>& segments) const
 {
-    point_2d tempPoint2d, startPoint2d, endPoint2d;
+    point_2d startPoint2d, endPoint2d;
     for (auto& segment : segments)
     {
         if (bg::get<0>(segment.first) < bg::get<0>(segment.second))
@@ -74,7 +74,7 @@ void SweepLine::resetSegmentsPoints(std::vector<segment_2d>& segments)
     }
 }
 
-std::vector<segment_2d> SweepLine::disjointPolygons(std::vector<polygon_2d> const& polygonVec)
+std::vector<segment_2d> SweepLine::disjointPolygons(std::vector<polygon_2d> const& polygonVec) const
 {
     std::vector<segment_2d> segments;
 
@@ -91,7 +91,7 @@ std::vector<segment_2d> SweepLine::disjointPolygons(std::vector<polygon_2d> cons
     return segments;
 }
 
-void SweepLine::updateSegmentTree(double sweepLineXPos, double sweepLineYPos)
+void SweepLine::updateSegmentTree(const double sweepLineXPos, const double sweepLineYPos)
 {
     for (auto& it = m_segmentTree.begin(); it != m_segmentTree.end(); it++)
     {

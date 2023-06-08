@@ -1,12 +1,12 @@
 #include "point.h"
 
-Point P_0;  // the "0" Point (0,0,0)
+Point P_0; // the "0" Point (0,0,0)
 
 // Read input Point format: "(%f)", "(%f, %f)", or "(%f, %f, %f)"
 std::istream& operator>>(std::istream& input, Point& P)
 {
     char c;
-    input >> c;  // skip '('
+    input >> c; // skip '('
     input >> P.x;
     input >> c;
     if (c == ')')
@@ -22,12 +22,12 @@ std::istream& operator>>(std::istream& input, Point& P)
     }
     // else                    // skip ','
     input >> P.z;
-    input >> c;  // skip ')'
+    input >> c; // skip ')'
     return input;
 }
 
 // Write output Point in format: "(%f)", "(%f, %f)", or "(%f, %f, %f)"
-std::ostream& operator<<(std::ostream& output, Point P)
+std::ostream& operator<<(std::ostream& output, const Point& P)
 {
     output << "(" << P.x << ", " << P.y << ", " << P.z << ")";
     return output;
@@ -37,12 +37,12 @@ std::ostream& operator<<(std::ostream& output, Point P)
 // Comparison (note: dimension must compare)
 //------------------------------------------------------------------
 
-int Point::operator==(Point const& Q)
+int Point::operator==(Point const& Q) const
 {
     return (x == Q.x && y == Q.y && z == Q.z);
 }
 
-int Point::operator!=(Point const& Q)
+int Point::operator!=(Point const& Q) const
 {
     return (x != Q.x || y != Q.y || z != Q.z);
 }
@@ -56,7 +56,7 @@ int Point::operator!=(Point const& Q)
 //        The programmer must enforce this (if they want to).
 //------------------------------------------------------------------
 
-Point operator*(int c, Point Q)
+Point operator*(const int c, const Point& Q)
 {
     Point P;
     P.x = c * Q.x;
@@ -65,7 +65,7 @@ Point operator*(int c, Point Q)
     return P;
 }
 
-Point operator*(double c, Point Q)
+Point operator*(const double c, const Point& Q)
 {
     Point P;
     P.x = c * Q.x;
@@ -74,7 +74,7 @@ Point operator*(double c, Point Q)
     return P;
 }
 
-Point operator*(Point Q, int c)
+Point operator*(const Point& Q, const int c)
 {
     Point P;
     P.x = c * Q.x;
@@ -83,7 +83,7 @@ Point operator*(Point Q, int c)
     return P;
 }
 
-Point operator*(Point Q, double c)
+Point operator*(const Point& Q, const double c)
 {
     Point P;
     P.x = c * Q.x;
@@ -92,7 +92,7 @@ Point operator*(Point Q, double c)
     return P;
 }
 
-Point operator/(Point Q, int c)
+Point operator/(const Point& Q, const int c)
 {
     Point P;
     P.x = Q.x / c;
@@ -101,7 +101,7 @@ Point operator/(Point Q, int c)
     return P;
 }
 
-Point operator/(Point Q, double c)
+Point operator/(const Point& Q, const double c)
 {
     Point P;
     P.x = Q.x / c;
@@ -131,7 +131,7 @@ Point operator+(Point const& Q, Point const& R)
 // Tests if coeffs add to 1.  If not, sets: err = Esum.
 //------------------------------------------------------------------
 
-Point asum(int n, int c[], Point Q[])
+Point asum(const int n, int c[], Point Q[])
 {
     Point P;
 
@@ -144,7 +144,7 @@ Point asum(int n, int c[], Point Q[])
     return P;
 }
 
-Point asum(int n, double c[], Point Q[])
+Point asum(const int n, double c[], Point Q[])
 {
     Point P;
 
@@ -162,16 +162,16 @@ Point asum(int n, double c[], Point Q[])
 // Distance between Points
 //------------------------------------------------------------------
 
-double d(Point P, Point Q)
-{  // Euclidean distance
+double d(const Point& P, const Point& Q)
+{ // Euclidean distance
     double dx = P.x - Q.x;
     double dy = P.y - Q.y;
     double dz = P.z - Q.z;
     return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-double d2(Point P, Point Q)
-{  // squared distance (more efficient)
+double d2(const Point& P, const Point& Q)
+{ // squared distance (more efficient)
     double dx = P.x - Q.x;
     double dy = P.y - Q.y;
     double dz = P.z - Q.z;
@@ -183,7 +183,7 @@ double d2(Point P, Point Q)
 //        - makes sense in 2D only
 //------------------------------------------------------------------
 
-double Point::isLeft(Point const& P1, Point const& P2)
+double Point::isLeft(Point const& P1, Point const& P2) const
 {
     return (P1.x - x) * (P2.y - y) - (P2.x - x) * (P1.y - y);
 }

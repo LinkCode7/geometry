@@ -2,7 +2,7 @@
 
 namespace sindy
 {
-int orientation2D_Polygon(int n, Point* V)
+int orientation2D_Polygon(const int n, Point* V)
 {
     // first find rightmost lowest vertex of the polygon
     int rmin = 0;
@@ -14,11 +14,11 @@ int orientation2D_Polygon(int n, Point* V)
         if (V[i].y > ymin)
             continue;
         if (V[i].y == ymin)
-        {                       // just as low
-            if (V[i].x < xmin)  // and to left
+        {                      // just as low
+            if (V[i].x < xmin) // and to left
                 continue;
         }
-        rmin = i;  // a new rightmost lowest vertex
+        rmin = i; // a new rightmost lowest vertex
         xmin = V[i].x;
         ymin = V[i].y;
     }
@@ -31,61 +31,64 @@ int orientation2D_Polygon(int n, Point* V)
         return isLeft(V[rmin - 1], V[rmin], V[rmin + 1]);
 }
 
-float area2D_Polygon(int n, Point* V)
+float area2D_Polygon(const int n, Point* V)
 {
     if (n < 3)
-        return 0;  // a degenerate polygon
+        return 0; // a degenerate polygon
 
     float area = 0;
-    int   i, j, k;  // indices
+    int   i, j, k; // indices
 
     for (i = 1, j = 2, k = 0; i < n; i++, j++, k++)
     {
         area += V[i].x * (V[j].y - V[k].y);
     }
-    area += V[n].x * (V[1].y - V[n - 1].y);  // wrap-around term
+    area += V[n].x * (V[1].y - V[n - 1].y); // wrap-around term
     return area / 2.0;
 }
 
-float area3D_Polygon(int n, Point* V, Point N)
+float area3D_Polygon(const int n, Point* V, const Point& N)
 {
     float area = 0;
-    float an, ax, ay, az;  // abs value of normal and its coords
-    int   coord;           // coord to ignore: 1=x, 2=y, 3=z
-    int   i, j, k;         // loop indices
+    float an, ax, ay, az; // abs value of normal and its coords
+    int   coord;          // coord to ignore: 1=x, 2=y, 3=z
+    int   i, j, k;        // loop indices
 
     if (n < 3)
-        return 0;  // a degenerate polygon
+        return 0; // a degenerate polygon
 
     // select largest abs coordinate to ignore for projection
-    ax = (N.x > 0 ? N.x : -N.x);  // abs x-coord
-    ay = (N.y > 0 ? N.y : -N.y);  // abs y-coord
-    az = (N.z > 0 ? N.z : -N.z);  // abs z-coord
+    ax = (N.x > 0 ? N.x : -N.x); // abs x-coord
+    ay = (N.y > 0 ? N.y : -N.y); // abs y-coord
+    az = (N.z > 0 ? N.z : -N.z); // abs z-coord
 
-    coord = 3;  // ignore z-coord
+    coord = 3; // ignore z-coord
     if (ax > ay)
     {
         if (ax > az)
-            coord = 1;  // ignore x-coord
+            coord = 1; // ignore x-coord
     }
     else if (ay > az)
-        coord = 2;  // ignore y-coord
+        coord = 2; // ignore y-coord
 
     // compute area of the 2D projection
     switch (coord)
     {
         case 1:
-            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++) area += (V[i].y * (V[j].z - V[k].z));
+            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++)
+                area += (V[i].y * (V[j].z - V[k].z));
             break;
         case 2:
-            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++) area += (V[i].z * (V[j].x - V[k].x));
+            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++)
+                area += (V[i].z * (V[j].x - V[k].x));
             break;
         case 3:
-            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++) area += (V[i].x * (V[j].y - V[k].y));
+            for (i = 1, j = 2, k = 0; i < n; i++, j++, k++)
+                area += (V[i].x * (V[j].y - V[k].y));
             break;
     }
     switch (coord)
-    {  // wrap-around term
+    { // wrap-around term
         case 1:
             area += (V[n].y * (V[1].z - V[n - 1].z));
             break;
@@ -98,7 +101,7 @@ float area3D_Polygon(int n, Point* V, Point N)
     }
 
     // scale to get area before projection
-    an = sqrt(ax * ax + ay * ay + az * az);  // length of normal vector
+    an = sqrt(ax * ax + ay * ay + az * az); // length of normal vector
     switch (coord)
     {
         case 1:
@@ -113,4 +116,4 @@ float area3D_Polygon(int n, Point* V, Point N)
     return area;
 }
 
-}  // namespace sindy
+} // namespace sindy

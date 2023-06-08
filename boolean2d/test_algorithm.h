@@ -8,7 +8,7 @@
 // TODO: 还没适配 Boost::Polygon 的数据格式
 #pragma region Boost::Polygon
 
-PolygonVec TestBoostPolygon(PolygonVec const& polygons)
+inline PolygonVec TestBoostPolygon(PolygonVec const& polygons)
 {
     //// 数据格式
     // PolygonVec polyVec;
@@ -26,12 +26,11 @@ PolygonVec TestBoostPolygon(PolygonVec const& polygons)
     //     polyVec.emplace_back(poly);
     // }
 
-    int64_t    startTime, endTime;
-    PolygonVec polygonsBooleanAnd;
-
-    startTime          = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    polygonsBooleanAnd = BooleanAnd(polygons);
-    endTime            = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const int64_t startTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    PolygonVec    polygonsBooleanAnd = BooleanAnd(polygons);
+    const int64_t endTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
     // 输出结果
     std::cout << "Polygon Build PolygonSet and Boolean: " << endTime - startTime << "ms" << std::endl;
@@ -41,15 +40,14 @@ PolygonVec TestBoostPolygon(PolygonVec const& polygons)
 
 #pragma endregion
 
-point2d_unordered_set TestBoostGeometry(std::vector<polygon_2d> const& polygons)
+inline point2d_unordered_set TestBoostGeometry(std::vector<polygon_2d> const& polygons)
 
 {
-    int64_t               startTime, endTime;
-    point2d_unordered_set geometryCrossPoints;
-
-    startTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-    geometryCrossPoints = GeometryIntersection(polygons);
-    endTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const int64_t startTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    point2d_unordered_set geometryCrossPoints = GeometryIntersection(polygons);
+    const int64_t         endTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 #ifdef _DEBUG
 
@@ -61,14 +59,15 @@ point2d_unordered_set TestBoostGeometry(std::vector<polygon_2d> const& polygons)
     return geometryCrossPoints;
 }
 
-point2d_unordered_set TestSweepLine(std::vector<polygon_2d> const& polygons)
+inline point2d_unordered_set TestSweepLine(std::vector<polygon_2d> const& polygons)
 {
-    int64_t   startTime, endTime;
     SweepLine sweepLine(polygons);
 
-    startTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const int64_t startTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     sweepLine.scan();
-    endTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    const int64_t endTime =
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 
 #ifdef _DEBUG
 

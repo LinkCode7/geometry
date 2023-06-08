@@ -22,9 +22,9 @@ enum polytype
 // Error codes
 enum Error
 {
-    Enot,  // no error
-    Edim,  // error: dim of point invalid for operation
-    Esum   // error: sum not affine (cooefs add to 1)
+    Enot, // no error
+    Edim, // error: dim of point invalid for operation
+    Esum  // error: sum not affine (cooefs add to 1)
 };
 
 class Point
@@ -35,25 +35,25 @@ public:
     double x, y, z;
 
     Point() { x = y = z = 0; }
-    Point(double a, double b)
+    Point(const double a, const double b)
     {
         x = a;
         y = b;
         z = 0;
     }
-    Point(double a, double b, double c)
+    Point(const double a, const double b, const double c)
     {
         x = a;
         y = b;
         z = c;
     }
-    ~Point(){};
+    ~Point() {}
 
     friend std::istream& operator>>(std::istream&, Point&);
-    friend std::ostream& operator<<(std::ostream&, Point);
+    friend std::ostream& operator<<(std::ostream&, const Point&);
 
-    int operator==(Point const&);
-    int operator!=(Point const&);
+    int operator==(Point const&) const;
+    int operator!=(Point const&) const;
 
     //----------------------------------------------------------
     // Point Scalar Operations (convenient but often illegal)
@@ -65,13 +65,13 @@ public:
     //    The programmer must enforce this (if they want to).
 
     // Scalar Multiplication
-    friend Point operator*(int, Point);
-    friend Point operator*(double, Point);
-    friend Point operator*(Point, int);
-    friend Point operator*(Point, double);
+    friend Point operator*(int, const Point&);
+    friend Point operator*(double, const Point&);
+    friend Point operator*(const Point&, int);
+    friend Point operator*(const Point&, double);
     // Scalar Division
-    friend Point operator/(Point, int);
-    friend Point operator/(Point, double);
+    friend Point operator/(const Point&, int);
+    friend Point operator/(const Point&, double);
 
     //----------------------------------------------------------
     // Point Addition (also convenient but often illegal)
@@ -89,9 +89,9 @@ public:
 
     //----------------------------------------------------------
     // Point Relations
-    friend double d(Point, Point);                     // Distance
-    friend double d2(Point, Point);                    // Distance^2
-    double        isLeft(Point const&, Point const&);  // 2D only
+    friend double d(const Point&, const Point&);            // Distance
+    friend double d2(const Point&, const Point&);           // Distance^2
+    double        isLeft(Point const&, Point const&) const; // 2D only
 
     // double        Area(Point, Point);                  // any dim for triangle PPP
 

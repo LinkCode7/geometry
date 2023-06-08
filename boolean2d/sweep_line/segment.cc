@@ -86,7 +86,7 @@ std::ostream& operator<<(std::ostream& out, Segment2d const& other)
 }
 
 // 默认扫描线垂直 x 轴，从左到右，不好改扫描线方向，改的话比较函数也要一起改
-void Segment2d::updateSweepLineCrossPoint(double x, double y)
+void Segment2d::updateSweepLineCrossPoint(const double x, const double y)
 {
     if (m_isNoK)
     {
