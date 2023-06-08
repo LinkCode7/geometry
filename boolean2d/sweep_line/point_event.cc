@@ -18,11 +18,11 @@ bool PointEvent::operator<(PointEvent const& other) const
     else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_point2d), bg::get<1>(other.m_point2d)))
         return bg::get<1>(this->m_point2d) < bg::get<1>(other.m_point2d);
     else if (this->m_eventType != other.m_eventType)
-        return this->m_eventType > other.m_eventType;
-    else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_otherEvent->m_point2d), bg::get<1>(other.m_otherEvent->m_point2d)))
-        return bg::get<1>(this->m_otherEvent->m_point2d) < bg::get<1>(other.m_otherEvent->m_point2d);
+        return this->m_eventType < other.m_eventType;
+    else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_otherEventSP->m_point2d), bg::get<1>(other.m_otherEventSP->m_point2d)))
+        return bg::get<1>(this->m_otherEventSP->m_point2d) < bg::get<1>(other.m_otherEventSP->m_point2d);
     else
-        return bg::get<0>(this->m_otherEvent->m_point2d) < bg::get<0>(other.m_otherEvent->m_point2d);
+        return bg::get<0>(this->m_otherEventSP->m_point2d) < bg::get<0>(other.m_otherEventSP->m_point2d);
 }
 
 // 坐标值相同的节点事件在排序时
@@ -35,9 +35,9 @@ bool PointEvent::operator>(PointEvent const& other) const
     else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_point2d), bg::get<1>(other.m_point2d)))
         return bg::get<1>(this->m_point2d) > bg::get<1>(other.m_point2d);
     else if (this->m_eventType != other.m_eventType)
-        return this->m_eventType < other.m_eventType;
-    else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_otherEvent->m_point2d), bg::get<1>(other.m_otherEvent->m_point2d)))
-        return bg::get<1>(this->m_otherEvent->m_point2d) > bg::get<1>(other.m_otherEvent->m_point2d);
+        return this->m_eventType > other.m_eventType;
+    else if (!IS_FLOAT_EQUAL(bg::get<1>(this->m_otherEventSP->m_point2d), bg::get<1>(other.m_otherEventSP->m_point2d)))
+        return bg::get<1>(this->m_otherEventSP->m_point2d) > bg::get<1>(other.m_otherEventSP->m_point2d);
     else
-        return bg::get<0>(this->m_otherEvent->m_point2d) > bg::get<0>(other.m_otherEvent->m_point2d);
+        return bg::get<0>(this->m_otherEventSP->m_point2d) > bg::get<0>(other.m_otherEventSP->m_point2d);
 }

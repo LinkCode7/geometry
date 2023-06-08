@@ -19,119 +19,119 @@ int main()
 
 #pragma region 测试凸多边形
 
-    //{
-    //    const double coor[][2] = {{0, 1}, {-2, 3}, {0, 5}, {2, 3}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{0, 1}, {-2, 3}, {0, 5}, {2, 3}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{-2, 0}, {-2, 2}, {2, 2}, {2, 0}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{-2, 0}, {-2, 2}, {2, 2}, {2, 0}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{-1, -1}, {3, 3}, {4, -2}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{-1, -1}, {3, 3}, {4, -2}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{-1, 2}, {0, 2}, {2.5, -0.5}, {2, -1}, {-2, 1}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{-1, 2}, {0, 2}, {2.5, -0.5}, {2, -1}, {-2, 1}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{0, 0}, {-50, 50}, {0, 100}, {50, 50}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{0, 0}, {-50, 50}, {0, 100}, {50, 50}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{0, 50}, {50, 0}, {0, -50}, {-50, 0}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{0, 50}, {50, 0}, {0, -50}, {-50, 0}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{12.7012, -637.599}, {-100.763, -594.415}, {-135, -508}, {-118, -413}, {10, -350},
-    //                              {129, -379},         {184, -474},          {132, -570},  {84, -617}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{12.7012, -637.599}, {-100.763, -594.415}, {-135, -508}, {-118, -413}, {10, -350},
+                                  {129, -379},         {184, -474},          {132, -570},  {84, -617}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{178, -615}, {4, -620}, {-156, -572}, {-160, -428}, {-7, -388}, {131, -407}, {214, -423}, {226, -550}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{178, -615}, {4, -620}, {-156, -572}, {-160, -428}, {-7, -388}, {131, -407}, {214, -423}, {226, -550}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{288.66, 245},    {417, 192.6595}, {667, 153},  {793, 143},  {903, 157},
-    //                              {984, 195},       {1119, 253},     {1177, 283}, {1213, 333}, {1212, 421},
-    //                              {1113, 502.2262}, {868, 547},      {550, 456},  {381, 385},  {298, 291}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{288.66, 245},    {417, 192.6595}, {667, 153},  {793, 143},  {903, 157},
+                                  {984, 195},       {1119, 253},     {1177, 283}, {1213, 333}, {1212, 421},
+                                  {1113, 502.2262}, {868, 547},      {550, 456},  {381, 385},  {298, 291}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{101, 338},  {217, 280},  {322, 255},  {499, 165},  {680, 176},  {807, 133},
-    //                              {952, 200},  {1042, 240}, {1125, 339}, {1216, 436}, {1179, 531}, {1088, 523},
-    //                              {1014, 482}, {821, 460},  {608, 488},  {479, 412},  {302, 345}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{101, 338},  {217, 280},  {322, 255},  {499, 165},  {680, 176},  {807, 133},
+                                  {952, 200},  {1042, 240}, {1125, 339}, {1216, 436}, {1179, 531}, {1088, 523},
+                                  {1014, 482}, {821, 460},  {608, 488},  {479, 412},  {302, 345}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{128.562, 84.9289}, {192.454, 59.9957}, {264.137, 70.1248}, {360.753, 83.3706}, {399.711, 113.758},
-    //                              {469.057, 150.379}, {514.249, 150.379}, {571.907, 183.104}, {604.632, 226.737}, {610.086, 275.824},
-    //                              {610.865, 337.378}, {568.79, 403.607},  {544.636, 413.736}, {458.928, 420.749}, {410.62, 411.399},
-    //                              {338.157, 381.011}, {187.779, 343.612}, {150.379, 324.912}, {98.9539, 293.745}, {97.3956, 216.608},
-    //                              {137.133, 158.17},  {129.341, 112.979}, {115.316, 104.408}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{128.562, 84.9289}, {192.454, 59.9957}, {264.137, 70.1248}, {360.753, 83.3706}, {399.711, 113.758},
+                                  {469.057, 150.379}, {514.249, 150.379}, {571.907, 183.104}, {604.632, 226.737}, {610.086, 275.824},
+                                  {610.865, 337.378}, {568.79, 403.607},  {544.636, 413.736}, {458.928, 420.749}, {410.62, 411.399},
+                                  {338.157, 381.011}, {187.779, 343.612}, {150.379, 324.912}, {98.9539, 293.745}, {97.3956, 216.608},
+                                  {137.133, 158.17},  {129.341, 112.979}, {115.316, 104.408}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {
-    //        {105.187, 124.666}, {141.808, 103.629}, {141.029, 67.0082}, {209.595, 82.5914}, {302.316, 49.8665}, {335.82, 113.758},
-    //        {432.436, 94.2789}, {419.191, 150.379}, {479.965, 130.12},  {486.978, 169.858}, {560.998, 124.666}, {548.532, 205.699},
-    //        {612.423, 210.374}, {553.986, 282.058}, {626.448, 364.649}, {564.894, 384.128}, {551.649, 441.786}, {482.303, 394.257},
-    //        {394.257, 418.411}, {349.845, 374.778}, {279.72, 403.607},  {227.516, 345.949}, {186.22, 358.416},  {175.312, 328.807},
-    //        {144.925, 328.807}, {158.95, 292.966},  {88.8248, 303.874}, {128.562, 263.358}, {55.3207, 251.67},  {163.625, 237.645},
-    //        {78.6956, 214.27},  {123.108, 207.258}, {103.629, 190.895}, {124.666, 204.141}, {105.966, 174.533}, {136.354, 180.766},
-    //        {120.771, 164.404}, {165.183, 152.716}, {117.654, 152.716}, {151.937, 130.9},   {109.083, 139.47},  {135.575, 123.108}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {
+            {105.187, 124.666}, {141.808, 103.629}, {141.029, 67.0082}, {209.595, 82.5914}, {302.316, 49.8665}, {335.82, 113.758},
+            {432.436, 94.2789}, {419.191, 150.379}, {479.965, 130.12},  {486.978, 169.858}, {560.998, 124.666}, {548.532, 205.699},
+            {612.423, 210.374}, {553.986, 282.058}, {626.448, 364.649}, {564.894, 384.128}, {551.649, 441.786}, {482.303, 394.257},
+            {394.257, 418.411}, {349.845, 374.778}, {279.72, 403.607},  {227.516, 345.949}, {186.22, 358.416},  {175.312, 328.807},
+            {144.925, 328.807}, {158.95, 292.966},  {88.8248, 303.874}, {128.562, 263.358}, {55.3207, 251.67},  {163.625, 237.645},
+            {78.6956, 214.27},  {123.108, 207.258}, {103.629, 190.895}, {124.666, 204.141}, {105.966, 174.533}, {136.354, 180.766},
+            {120.771, 164.404}, {165.183, 152.716}, {117.654, 152.716}, {151.937, 130.9},   {109.083, 139.47},  {135.575, 123.108}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{97, 30}, {134, -15}, {219, -8}, {273, 55}, {163, 94}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{97, 30}, {134, -15}, {219, -8}, {273, 55}, {163, 94}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
-    //{
-    //    const double coor[][2] = {{96, 6}, {148, -7}, {189, -18}, {221, 17}, {289, 25}, {233, 84}};
-    //    bg::assign_points(geometryPolygon2d, coor);
-    //    bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
-    //}
-    // geometryPolygon2dVec.emplace_back(geometryPolygon2d);
+    {
+        const double coor[][2] = {{96, 6}, {148, -7}, {189, -18}, {221, 17}, {289, 25}, {233, 84}};
+        bg::assign_points(geometryPolygon2d, coor);
+        bg::append(geometryPolygon2d.outer(), point_2d({coor[0][0], coor[0][1]}));
+    }
+    geometryPolygon2dVec.emplace_back(geometryPolygon2d);
 
 #pragma endregion
 
@@ -337,7 +337,7 @@ int main()
             return bg::get<1>(a) < bg::get<1>(b);
     });
 
-#ifdef _DEBUG
+#if _DEBUG
 
     // 输出
     for (int i = 0; i < GeometrycrossPointVec.size(); i++)

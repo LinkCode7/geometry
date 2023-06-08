@@ -6,7 +6,6 @@
 class Segment2d
 {
 public:
-    Segment2d() : m_segment2d(segment_2d()), m_startPointEvent(PointEvent()), m_sweepLineCrossPoint(point_2d()), m_k(0.0), m_isNoK(false) {}
     Segment2d(PointEvent const& pointEvent, PointEvent const& anotherPointEvent);
     Segment2d(Segment2d const& other)
         : m_segment2d(other.m_segment2d),
@@ -16,7 +15,6 @@ public:
           m_isNoK(other.m_isNoK)
     {
     }
-    ~Segment2d() {}
 
     Segment2d operator=(Segment2d const& other);
     bool      operator==(Segment2d const& other) const;

@@ -9,8 +9,8 @@ SweepLine::SweepLine(std::vector<polygon_2d> const& polygonVec)
     {
         PointEvent startPointEvent(segment.first, EventType::StartPoint);
         PointEvent endPointEvent(segment.second, EventType::EndPoint);
-        startPointEvent.setOtherEvent(endPointEvent);
-        endPointEvent.setOtherEvent(startPointEvent);
+        startPointEvent.setOtherEvent(std::make_shared<PointEvent>(endPointEvent));
+        endPointEvent.setOtherEvent(std::make_shared<PointEvent>(startPointEvent));
         m_pointQueue.emplace(startPointEvent);
         m_pointQueue.emplace(endPointEvent);
 
@@ -28,8 +28,8 @@ SweepLine::SweepLine(std::vector<segment_2d>& segmentVec)
     {
         PointEvent startPointEvent(segment.first, EventType::StartPoint);
         PointEvent endPointEvent(segment.second, EventType::EndPoint);
-        startPointEvent.setOtherEvent(endPointEvent);
-        endPointEvent.setOtherEvent(startPointEvent);
+        startPointEvent.setOtherEvent(std::make_shared<PointEvent>(endPointEvent));
+        endPointEvent.setOtherEvent(std::make_shared<PointEvent>(startPointEvent));
         m_pointQueue.emplace(startPointEvent);
         m_pointQueue.emplace(endPointEvent);
 
@@ -158,8 +158,8 @@ void SweepLine::emplaceCrossPoint(int& a, int& b)
             isEndPointA = false;
 
             aStartPointEvent.setEventType(EventType::StartPoint);
-            aStartPointEvent.setOtherEvent(crossPointEvent);
-            crossPointEvent.setOtherEvent(aStartPointEvent);
+            aStartPointEvent.setOtherEvent(std::make_shared<PointEvent>(crossPointEvent));
+            crossPointEvent.setOtherEvent(std::make_shared<PointEvent>(aStartPointEvent));
 
             // 只有第二个交点需要加起始点
             if (i == 1)
@@ -186,8 +186,8 @@ void SweepLine::emplaceCrossPoint(int& a, int& b)
             isEndPointB = false;
 
             bStartPointEvent.setEventType(EventType::StartPoint);
-            bStartPointEvent.setOtherEvent(crossPointEvent);
-            crossPointEvent.setOtherEvent(bStartPointEvent);
+            bStartPointEvent.setOtherEvent(std::make_shared<PointEvent>(crossPointEvent));
+            crossPointEvent.setOtherEvent(std::make_shared<PointEvent>(bStartPointEvent));
 
             // 只有第二个交点需要加起始点
             if (i == 1)
@@ -220,9 +220,9 @@ void SweepLine::emplaceCrossPoint(int& a, int& b)
             (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentA.getSegment().second)) ||
              !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentA.getSegment().second))))
         {
-            aStartPointEvent.setOtherEvent(aEndPointEvent);
+            aStartPointEvent.setOtherEvent(std::make_shared<PointEvent>(aEndPointEvent));
             aStartPointEvent.setEventType(EventType::StartPoint);
-            aEndPointEvent.setOtherEvent(aStartPointEvent);
+            aEndPointEvent.setOtherEvent(std::make_shared<PointEvent>(aStartPointEvent));
             m_pointQueue.emplace(aStartPointEvent);
             m_pointQueue.emplace(aEndPointEvent);
         }
@@ -233,9 +233,9 @@ void SweepLine::emplaceCrossPoint(int& a, int& b)
             (!IS_FLOAT_EQUAL(bg::get<0>(crossPoint), bg::get<0>(segmentB.getSegment().second)) ||
              !IS_FLOAT_EQUAL(bg::get<1>(crossPoint), bg::get<1>(segmentB.getSegment().second))))
         {
-            bStartPointEvent.setOtherEvent(bEndPointEvent);
+            bStartPointEvent.setOtherEvent(std::make_shared<PointEvent>(bEndPointEvent));
             bStartPointEvent.setEventType(EventType::StartPoint);
-            bEndPointEvent.setOtherEvent(bStartPointEvent);
+            bEndPointEvent.setOtherEvent(std::make_shared<PointEvent>(bStartPointEvent));
             m_pointQueue.emplace(bStartPointEvent);
             m_pointQueue.emplace(bEndPointEvent);
         }

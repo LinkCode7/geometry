@@ -12,10 +12,8 @@
 class SweepLine
 {
 public:
-    // SweepLine() {}
     SweepLine(std::vector<segment_2d>& segmentVec);
     SweepLine(std::vector<polygon_2d> const& polygonVec);
-    ~SweepLine() {}
 
     inline point2d_unordered_set GetAllCrossPoints() const { return m_allCrossPoints; }
 
