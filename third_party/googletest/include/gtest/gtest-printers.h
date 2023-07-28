@@ -247,7 +247,7 @@ struct ConvertibleToIntegerPrinter {
   // case printing it as an integer is the desired behavior.  In case
   // T is not an enum, printing it as an integer is the best we can do
   // given that it has no user-defined printer.
-  static void PrintValue(internal::BiggestInt value, ::std::ostream* os) {
+  static void PrintValue(const internal::BiggestInt value, ::std::ostream* os) {
     *os << value;
   }
 };
@@ -450,7 +450,7 @@ void PrintTo(const T& value, ::std::ostream* os) {
 // Overloads for various char types.
 GTEST_API_ void PrintTo(unsigned char c, ::std::ostream* os);
 GTEST_API_ void PrintTo(signed char c, ::std::ostream* os);
-inline void PrintTo(char c, ::std::ostream* os) {
+inline void     PrintTo(const char c, ::std::ostream* os) {
   // When printing a plain char, we always treat it as unsigned.  This
   // way, the output won't be affected by whether the compiler thinks
   // char is signed or not.
@@ -458,7 +458,7 @@ inline void PrintTo(char c, ::std::ostream* os) {
 }
 
 // Overloads for other simple built-in types.
-inline void PrintTo(bool x, ::std::ostream* os) {
+inline void PrintTo(const bool x, ::std::ostream* os) {
   *os << (x ? "true" : "false");
 }
 
@@ -472,7 +472,7 @@ inline void PrintTo(bool x, ::std::ostream* os) {
 GTEST_API_ void PrintTo(wchar_t wc, ::std::ostream* os);
 
 GTEST_API_ void PrintTo(char32_t c, ::std::ostream* os);
-inline void PrintTo(char16_t c, ::std::ostream* os) {
+inline void     PrintTo(const char16_t c, ::std::ostream* os) {
   PrintTo(ImplicitCast_<char32_t>(c), os);
 }
 #ifdef __cpp_char8_t
@@ -554,14 +554,14 @@ int AppropriateResolution(FloatType val) {
   return full;
 }
 
-inline void PrintTo(float f, ::std::ostream* os) {
+inline void PrintTo(const float f, ::std::ostream* os) {
   auto old_precision = os->precision();
   os->precision(AppropriateResolution(f));
   *os << f;
   os->precision(old_precision);
 }
 
-inline void PrintTo(double d, ::std::ostream* os) {
+inline void PrintTo(const double d, ::std::ostream* os) {
   auto old_precision = os->precision();
   os->precision(AppropriateResolution(d));
   *os << d;
@@ -625,7 +625,7 @@ inline void PrintTo(wchar_t* s, ::std::ostream* os) {
 // Prints the given number of elements in an array, without printing
 // the curly braces.
 template <typename T>
-void PrintRawArrayTo(const T a[], size_t count, ::std::ostream* os) {
+void PrintRawArrayTo(const T a[], const size_t count, ::std::ostream* os) {
   UniversalPrint(a[0], os);
   for (size_t i = 1; i != count; i++) {
     *os << ", ";

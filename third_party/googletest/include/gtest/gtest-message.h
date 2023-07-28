@@ -162,13 +162,13 @@ class GTEST_API_ Message {
   // templatized version above.  Without this definition, streaming
   // endl or other basic IO manipulators to Message will confuse the
   // compiler.
-  Message& operator<<(BasicNarrowIoManip val) {
+  Message& operator<<(const BasicNarrowIoManip val) {
     *ss_ << val;
     return *this;
   }
 
   // Instead of 1/0, we want to see true/false for bool values.
-  Message& operator<<(bool b) { return *this << (b ? "true" : "false"); }
+  Message& operator<<(const bool b) { return *this << (b ? "true" : "false"); }
 
   // These two overloads allow streaming a wide C string to a Message
   // using the UTF-8 encoding.

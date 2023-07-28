@@ -5,7 +5,7 @@
 #define MY_EXTENTS_MAX -DBL_MAX
 #define MY_EXTENTS_MIN DBL_MAX
 
-bool compareDouble(double value1, double value2, double tol = SINDY_ZERO)
+bool compareDouble(const double value1, const double value2, const double tol = SINDY_ZERO)
 {
     double sub = value1 - value2;
     if (sub < 0)
@@ -87,7 +87,7 @@ bool Extents2d::inExtents(const Point2d& pt) const
         return false;
     return true;
 }
-bool Extents2d::inExtents(const Point2d& pt, double tol) const
+bool Extents2d::inExtents(const Point2d& pt, const double tol) const
 {
     if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
         return false;
@@ -103,7 +103,7 @@ bool Extents2d::outExtents(const Point2d& pt) const
         return true;
     return false;
 }
-bool Extents2d::outExtents(const Point2d& pt, double tol) const
+bool Extents2d::outExtents(const Point2d& pt, const double tol) const
 {
     if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
         return true;
@@ -119,7 +119,7 @@ bool Extents2d::outExtents(const Extents2d& ext) const
         return true;
     return false;
 }
-bool Extents2d::outExtents(const Extents2d& ext, double tol) const
+bool Extents2d::outExtents(const Extents2d& ext, const double tol) const
 {
     if (ext.m_max.x() < m_min.x() - tol || ext.m_min.x() > m_max.x() + tol)
         return true;
@@ -128,7 +128,7 @@ bool Extents2d::outExtents(const Extents2d& ext, double tol) const
     return false;
 }
 
-void Extents2d::expand(double value)
+void Extents2d::expand(const double value)
 {
     m_min.x() -= value;
     m_min.y() -= value;

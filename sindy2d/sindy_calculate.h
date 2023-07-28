@@ -23,19 +23,23 @@ bool isIntersect(const Point2d& a, const Point2d& b, const Point2d& c, const Poi
 // 求两条线段的交点，可能有0,1,2,3,4个交点
 int intersectionPoint(const Point2d& a, const Point2d& b, const Point2d& c, const Point2d& d, std::vector<Point2d>& result);
 
-inline bool isEqual(double val1, double val2, double epsilon)
+inline bool isEqual(const double val1, const double val2, const double epsilon)
 {
     double diff = val1 - val2;
+
+#ifdef _DEBUG
     assert(((-epsilon <= diff) && (diff <= epsilon)) == (abs(diff) <= epsilon));
+#endif
+
     return ((-epsilon <= diff) && (diff <= epsilon));
 }
 
-inline bool lessThanOrEqual(double val1, double val2, double epsilon = Epsilon)
+inline bool lessThanOrEqual(const double val1, const double val2, const double epsilon = Epsilon)
 {
     return (val1 < val2) || isEqual(val1, val2, epsilon);
 }
 
-inline double getAbs(double dValue)
+inline double getAbs(const double dValue)
 {
     if (dValue > 0)
         return dValue;
@@ -44,17 +48,17 @@ inline double getAbs(double dValue)
 }
 
 // 比较两个浮点数：0表示相同 1表示前面大 -1表示后面大
-inline int compare(double src1, double src2, double tol = SINDY_ZERO)
+inline int compare(const double src1, const double src2, const double tol = SINDY_ZERO)
 {
     double dblSub = src1 - src2;
     if (getAbs(dblSub) <= tol)
-        return 0;  // 相同
+        return 0; // 相同
     else if (dblSub > tol)
         return 1;
     else
         return -1;
 }
 
-}  // namespace sindy
+} // namespace sindy
 
-#endif  // !SINDY_CALCULATE_H
+#endif // !SINDY_CALCULATE_H

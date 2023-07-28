@@ -14,7 +14,7 @@ class Point2d
     double _y;
 
 public:
-    Point2d(double xx, double yy) : _x(xx), _y(yy) {}
+    Point2d(const double xx, const double yy) : _x(xx), _y(yy) {}
     Point2d() : _x(SINDY_DEFAULT_POINT_VAL), _y(SINDY_DEFAULT_POINT_VAL) {}
 
     Point2d& operator=(const Point2d& other)
