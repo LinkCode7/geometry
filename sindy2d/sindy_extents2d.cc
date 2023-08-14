@@ -5,7 +5,7 @@
 #define MY_EXTENTS_MAX -DBL_MAX
 #define MY_EXTENTS_MIN DBL_MAX
 
-bool compareDouble(const double value1, const double value2, const double tol = SINDY_ZERO)
+bool compareDouble(double value1, double value2, double tol = SINDY_ZERO)
 {
     double sub = value1 - value2;
     if (sub < 0)
@@ -51,22 +51,22 @@ void Extents2d::set(const Point2d& ptMin, const Point2d& ptMax)
 // 建议使用前先判断有效性
 bool Extents2d::invalid() const
 {
-    if (compareDouble(m_min.x(), MY_EXTENTS_MIN) && compareDouble(m_min.y(), MY_EXTENTS_MIN) && compareDouble(m_max.x(), MY_EXTENTS_MAX) &&
-        compareDouble(m_max.y(), MY_EXTENTS_MAX))
+    if (compareDouble(m_min.x(), MY_EXTENTS_MIN) && compareDouble(m_min.y(), MY_EXTENTS_MIN) &&
+        compareDouble(m_max.x(), MY_EXTENTS_MAX) && compareDouble(m_max.y(), MY_EXTENTS_MAX))
         return true;
     return false;
 }
 void Extents2d::addPoint(const Point2d& pt)
 {
     if (pt.x() < m_min.x())
-        m_min.x() = pt.x();
+        m_min.x(pt.x());
     if (pt.x() > m_max.x())
-        m_max.x() = pt.x();
+        m_max.x(pt.x());
 
     if (pt.y() < m_min.y())
-        m_min.y() = pt.y();
+        m_min.y(pt.y());
     if (pt.y() > m_max.y())
-        m_max.y() = pt.y();
+        m_max.y(pt.y());
 }
 void Extents2d::addExtents(const Extents2d& ext)
 {
@@ -128,23 +128,19 @@ bool Extents2d::outExtents(const Extents2d& ext, const double tol) const
     return false;
 }
 
-void Extents2d::expand(const double value)
+void Extents2d::expand(double value)
 {
-    m_min.x() -= value;
-    m_min.y() -= value;
-    m_max.x() += value;
-    m_max.y() += value;
+    m_min -= value;
+    m_max += value;
 }
 
 void Extents2d::moveTo(const Point2d& ptNewCenter)
 {
     Point2d ptCurCenter{(m_max.x() * 0.5 + m_min.x() * 0.5), (m_max.y() * 0.5 + m_min.y() * 0.5)};
-    double  offsetX = ptNewCenter.x() - ptCurCenter.x();
-    double  offsetY = ptNewCenter.y() - ptCurCenter.y();
-    m_min.x() += offsetX;
-    m_min.y() += offsetY;
-    m_max.x() += offsetX;
-    m_max.y() += offsetY;
+    Point2d offset(ptNewCenter.x() - ptCurCenter.x(), ptNewCenter.y() - ptCurCenter.y());
+
+    m_min += offset;
+    m_max += offset;
 }
 
 Point2d Extents2d::centerPt() const
@@ -152,4 +148,4 @@ Point2d Extents2d::centerPt() const
     return {(m_max.x() * 0.5 + m_min.x() * 0.5), (m_max.y() * 0.5 + m_min.y() * 0.5)};
 }
 
-}  // namespace sindy
+} // namespace sindy

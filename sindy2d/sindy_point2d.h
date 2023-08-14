@@ -1,55 +1,113 @@
 #ifndef SINDY_POINT_H
 #define SINDY_POINT_H
 
-#include <math.h>
-
 #define SINDY_DEFAULT_POINT_VAL 0.0
-#define PRECISION 1e-8
 
 namespace sindy
 {
 class Point2d
 {
-    double _x;
-    double _y;
+    double _data[2] = {SINDY_DEFAULT_POINT_VAL, SINDY_DEFAULT_POINT_VAL};
 
 public:
-    Point2d(const double xx, const double yy) : _x(xx), _y(yy) {}
-    Point2d() : _x(SINDY_DEFAULT_POINT_VAL), _y(SINDY_DEFAULT_POINT_VAL) {}
+    Point2d(double x, double y)
+    {
+        _data[0] = x;
+        _data[1] = y;
+    }
+    Point2d() {}
 
-    Point2d& operator=(const Point2d& other)
+    inline double x() const { return _data[0]; }
+    inline void   x(double x) { _data[0] = x; }
+
+    inline void   y(double y) { _data[1] = y; }
+    inline double y() const { return _data[1]; }
+
+    inline Point2d& operator=(const Point2d& other)
     {
         if (this == &other)
             return *this;
-        _x = other._x;
-        _y = other._y;
+        _data[0] = other._data[0];
+        _data[1] = other._data[1];
         return *this;
     }
 
-    bool operator==(const Point2d& other) const
+    inline bool operator==(const Point2d& pt) const
     {
-        if (fabs(this->_x - other._x) <= PRECISION && fabs(this->_y - other._y) <= PRECISION)
+        if (fabs(this->_data[0] - pt._data[0]) <= SINDY_PRECISION && fabs(this->_data[1] - pt._data[1]) <= SINDY_PRECISION)
             return true;
         return false;
     }
+    inline bool operator!=(const Point2d& pt) const { return !(*this == pt); }
 
-    inline double& x() { return _x; }
-    inline double  x() const { return _x; }
-    inline double& y() { return _y; }
-    inline double  y() const { return _y; }
+    inline Point2d operator+(const Point2d& pt) const { return Point2d(_data[0] + pt._data[0], _data[1] + pt._data[1]); }
+    inline Point2d operator+=(const Point2d& pt)
+    {
+        *this = (*this + pt);
+        return *this;
+    }
+    inline Point2d operator+=(double value)
+    {
+        _data[0] += value;
+        _data[1] += value;
+        return *this;
+    }
 
-    inline double  operator*(const Point2d& pt) const { return _x * pt._x + _y * pt._y; }
-    inline Point2d operator+(const Point2d& pt) const { return {_x + pt._x, _y + pt._y}; }
-    inline Point2d operator-(const Point2d& pt) const { return {_x - pt._x, _y - pt._y}; }
+    inline Point2d operator-(const Point2d& pt) const { return Point2d(_data[0] - pt._data[0], _data[1] - pt._data[1]); }
+    inline Point2d operator-=(const Point2d& pt)
+    {
+        *this = (*this - pt);
+        return *this;
+    }
+    inline Point2d operator-=(double value)
+    {
+        _data[0] -= value;
+        _data[1] -= value;
+        return *this;
+    }
+
+    inline Point2d scale(double scale) const { return {_data[0] * scale, _data[1] * scale}; }
+    inline double  operator*(const Point2d& pt) const { return _data[0] * pt._data[0] + _data[1] * pt._data[1]; }
+    inline double  operator*=(const Point2d& pt) const { return _data[0] * pt._data[0] + _data[1] * pt._data[1]; }
+
+    inline double dot(Point2d const& pt) { return (_data[0] * pt._data[0] + _data[1] * pt._data[1]); };
 
     // 叉积
-    inline double        cross(const Point2d& pt) const { return _x * pt._y - _y * pt._x; }
+    inline double        cross(const Point2d& pt) const { return _data[0] * pt._data[1] - _data[1] * pt._data[0]; }
     inline static double cross(const Point2d& a, const Point2d& b, const Point2d& c, const Point2d& d)
     {
         return Point2d(b - a).cross(Point2d(c - d));
     }
+
+    inline double length() const { return sqrt(_data[0] * _data[0] + _data[1] * _data[1]); };
+
+    // 单位向量
+    inline Point2d normalize() const
+    {
+        if (_data[0] == 0 && _data[1] == 0)
+            return Point2d(0, 0);
+        double len = length();
+        return {_data[0] / len, _data[1] / len};
+    }
+
+    // 得到将this绕center旋转指定弧度后的点
+    inline Point2d rotate(Point2d const& center, double radian) const
+    {
+        double cos1 = cos(radian);
+        double sin1 = sin(radian);
+        double dx   = _data[0] - center._data[0];
+        double dy   = _data[1] - center._data[1];
+        double x    = dx * cos1 + dy * -sin1;
+        double y    = dx * sin1 + dy * cos1;
+        return Point2d(center._data[0] + x, center._data[1] + y);
+    }
+
+    inline bool equal(Point2d const& pt, double tol) const
+    {
+        return (fabs(_data[0] - pt._data[0]) <= tol && fabs(_data[1] - pt._data[1]) <= tol) ? true : false;
+    }
 };
 
-}  // namespace sindy
+} // namespace sindy
 
-#endif  // !SINDY_POINT_H
+#endif // !SINDY_POINT_H

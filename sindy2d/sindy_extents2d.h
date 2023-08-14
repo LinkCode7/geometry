@@ -2,7 +2,6 @@
 #define SINDY_EXTENTS2D_H
 #include <initializer_list>
 
-#include "../common.h"
 #include "../sindy2d/sindy_point2d.h"
 
 namespace sindy
@@ -25,7 +24,7 @@ public:
     void    reset(const Point2d& pt1, const Point2d& pt2);
     bool    invalid() const;
     Point2d centerPt() const;
-    void    expand(double value);  // 扩大或缩小(负数)包络
+    void    expand(double value); // 扩大或缩小(负数)包络
     void    moveTo(const Point2d& ptNewCenter);
 
     void addPoint(const Point2d& pt);
@@ -39,6 +38,6 @@ public:
     bool outExtents(const Extents2d& ext, double tol) const;
 };
 
-}  // namespace sindy
+} // namespace sindy
 
-#endif  // !SINDY_EXTENTS2D_H
+#endif // !SINDY_EXTENTS2D_H

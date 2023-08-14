@@ -2,7 +2,6 @@
 #define SINDY_CALCULATE_H
 #include <vector>
 
-#include "../common.h"
 #include "../sindy2d/sindy_point2d.h"
 #ifdef _DEBUG
     #include <cassert>

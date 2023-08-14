@@ -9,8 +9,6 @@
 
 #include "../sindy2d/sindy_point2d.h"
 
-#define PRECISION 1e-8
-
 using sindy::Point2d;
 
 // 多边形链求交算法
@@ -69,6 +67,9 @@ private:
     bool onLineDect(const Point2d &p, const Point2d &p1, const Point2d &p2) const;
 
     // 两点间距离公式
-    inline double distance(const Point2d &p1, const Point2d &p2) const { return sqrt(pow(p1.x() - p2.x(), 2) + pow(p1.y() - p2.y(), 2)); };
+    inline double distance(const Point2d &p1, const Point2d &p2) const
+    {
+        return sqrt(pow(p1.x() - p2.x(), 2) + pow(p1.y() - p2.y(), 2));
+    };
 };
-#endif  // !POLYGON_CHAIN_H
+#endif // !POLYGON_CHAIN_H
