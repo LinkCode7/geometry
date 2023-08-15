@@ -10,12 +10,16 @@ class Point2d
     double _data[2] = {SINDY_DEFAULT_POINT_VAL, SINDY_DEFAULT_POINT_VAL};
 
 public:
+    static const Point2d kOrigin;
+    static const Point2d kXAxis;
+    static const Point2d kYAxis;
+
+    Point2d() {}
     Point2d(double x, double y)
     {
         _data[0] = x;
         _data[1] = y;
     }
-    Point2d() {}
 
     inline double x() const { return _data[0]; }
     inline void   x(double x) { _data[0] = x; }
@@ -32,6 +36,10 @@ public:
         return *this;
     }
 
+    inline bool equal(Point2d const& pt, double tol) const
+    {
+        return (fabs(_data[0] - pt._data[0]) <= tol && fabs(_data[1] - pt._data[1]) <= tol) ? true : false;
+    }
     inline bool operator==(const Point2d& pt) const
     {
         if (fabs(this->_data[0] - pt._data[0]) <= SINDY_PRECISION && fabs(this->_data[1] - pt._data[1]) <= SINDY_PRECISION)
@@ -40,6 +48,7 @@ public:
     }
     inline bool operator!=(const Point2d& pt) const { return !(*this == pt); }
 
+    inline Point2d getAdd(double x, double y) const { return Point2d(_data[0] + x, _data[1] + y); }
     inline Point2d operator+(const Point2d& pt) const { return Point2d(_data[0] + pt._data[0], _data[1] + pt._data[1]); }
     inline Point2d operator+=(const Point2d& pt)
     {
@@ -73,10 +82,10 @@ public:
     inline double dot(Point2d const& pt) { return (_data[0] * pt._data[0] + _data[1] * pt._data[1]); };
 
     // 叉积
-    inline double        cross(const Point2d& pt) const { return _data[0] * pt._data[1] - _data[1] * pt._data[0]; }
-    inline static double cross(const Point2d& a, const Point2d& b, const Point2d& c, const Point2d& d)
+    inline double        crossProduct(const Point2d& pt) const { return _data[0] * pt._data[1] - _data[1] * pt._data[0]; }
+    inline static double crossProduct(const Point2d& a, const Point2d& b, const Point2d& c, const Point2d& d)
     {
-        return Point2d(b - a).cross(Point2d(c - d));
+        return Point2d(b - a).crossProduct(Point2d(c - d));
     }
 
     inline double length() const { return sqrt(_data[0] * _data[0] + _data[1] * _data[1]); };
@@ -102,9 +111,24 @@ public:
         return Point2d(center._data[0] + x, center._data[1] + y);
     }
 
-    inline bool equal(Point2d const& pt, double tol) const
+    // 求向量this->center的弧度[-PI, PI]，笛卡尔系坐标轴
+    inline double angle(Point2d const& center) const { return atan2(_data[1] - center.y(), _data[0] - center.x()); }
+    // 求向量this->center与kXAxis的弧度[0, PI * 2]
+    inline double angleX(Point2d const& center = Point2d(0.0, 0.0))
     {
-        return (fabs(_data[0] - pt._data[0]) <= tol && fabs(_data[1] - pt._data[1]) <= tol) ? true : false;
+        double result = angle(center);
+        if (result < 0.0)
+            result = PI2 + result;
+        return result;
+    }
+
+    inline double distance(Point2d const& pt) const
+    {
+        return sqrt(pow(fabs(_data[0] - pt._data[0]), 2) + pow(fabs(_data[1] - pt._data[1]), 2));
+    }
+    inline double powDist(Point2d const& pt) const
+    {
+        return pow(fabs(_data[0] - pt._data[0]), 2) + pow(fabs(_data[1] - pt._data[1]), 2);
     }
 };
 

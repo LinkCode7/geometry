@@ -11,7 +11,8 @@ file(GLOB SRC
        ${PROJECT_SOURCE_DIR}/boolean2d/*.cc
        ${PROJECT_SOURCE_DIR}/boolean2d/sweep_line/*.cc
        ${PROJECT_SOURCE_DIR}/sindy2d/*.cc
-       ${PROJECT_SOURCE_DIR}/test/*.cc)
+       ${PROJECT_SOURCE_DIR}/test/*.cc
+       ${PROJECT_SOURCE_DIR}/test/sindy2d/*.cc)
 
 message(">>> SRC=${SRC}")
 

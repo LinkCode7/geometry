@@ -1,0 +1,4 @@
+#ifndef SINDY_BEZIER2D_H
+#define SINDY_BEZIER2D_H
+
+#endif // !SINDY_BEZIER2D_H

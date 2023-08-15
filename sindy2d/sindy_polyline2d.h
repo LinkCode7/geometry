@@ -1,0 +1,4 @@
+#ifndef SINDY_POLYLINE2D_H
+#define SINDY_POLYLINE2D_H
+
+#endif // !SINDY_POLYLINE2D_H

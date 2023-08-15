@@ -5,7 +5,9 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 
-file(GLOB SRC_TEST ${PROJECT_SOURCE_DIR}/*.cc)
+file(GLOB SRC_TEST
+       ${PROJECT_SOURCE_DIR}/*.cc
+       ${PROJECT_SOURCE_DIR}/sindy2d/*.cc)
 
 add_executable(${PROJECT_NAME} ${SRC_TEST})
 
