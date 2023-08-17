@@ -91,7 +91,7 @@ std::vector<segment_2d> SweepLine::disjointPolygons(std::vector<polygon_2d> cons
     return segments;
 }
 
-void SweepLine::updateSegmentTree(const double sweepLineXPos, const double sweepLineYPos)
+void SweepLine::updateSegmentTree(double sweepLineXPos, double sweepLineYPos)
 {
     for (auto& it = m_segmentTree.begin(); it != m_segmentTree.end(); it++)
     {

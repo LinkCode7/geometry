@@ -4,7 +4,7 @@
 
 namespace sindy
 {
-class Edges
+class EdgeGroup
 {
     std::vector<GeometrySp> _edges;
 

@@ -87,7 +87,7 @@ bool Box2d::inBox(const Point2d& pt) const
         return false;
     return true;
 }
-bool Box2d::inBox(const Point2d& pt, const double tol) const
+bool Box2d::inBox(const Point2d& pt, double tol) const
 {
     if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
         return false;
@@ -103,7 +103,7 @@ bool Box2d::outBox(const Point2d& pt) const
         return true;
     return false;
 }
-bool Box2d::outBox(const Point2d& pt, const double tol) const
+bool Box2d::outBox(const Point2d& pt, double tol) const
 {
     if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
         return true;
@@ -119,7 +119,7 @@ bool Box2d::outBox(const Box2d& ext) const
         return true;
     return false;
 }
-bool Box2d::outBox(const Box2d& ext, const double tol) const
+bool Box2d::outBox(const Box2d& ext, double tol) const
 {
     if (ext.m_max.x() < m_min.x() - tol || ext.m_min.x() > m_max.x() + tol)
         return true;

@@ -6,8 +6,8 @@ namespace sindy
 {
 class Polygon
 {
-    std::vector<Edges> _hole;    // 内洞
-    Edges              _contour; // 外轮廓
+    std::vector<EdgeGroup> _hole;    // 内洞
+    EdgeGroup              _contour; // 外轮廓
 
 public:
     Polygon() {}

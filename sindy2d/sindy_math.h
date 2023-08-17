@@ -21,7 +21,7 @@ bool isIntersect(Point2d const& a, Point2d const& b, Point2d const& c, Point2d c
 // 求两条线段的交点，可能有0,1,2个交点
 int intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d, std::vector<Point2d>& result);
 
-inline bool isEqual(const double val1, const double val2, const double epsilon)
+inline bool isEqual(double val1, double val2, double epsilon)
 {
     double diff = val1 - val2;
 
@@ -32,12 +32,12 @@ inline bool isEqual(const double val1, const double val2, const double epsilon)
     return ((-epsilon <= diff) && (diff <= epsilon));
 }
 
-inline bool lessThanOrEqual(const double val1, const double val2, const double epsilon = Epsilon)
+inline bool lessThanOrEqual(double val1, double val2, double epsilon = Epsilon)
 {
     return (val1 < val2) || isEqual(val1, val2, epsilon);
 }
 
-inline double getAbs(const double dValue)
+inline double getAbs(double dValue)
 {
     if (dValue > 0)
         return dValue;
@@ -46,7 +46,7 @@ inline double getAbs(const double dValue)
 }
 
 // 比较两个浮点数：0表示相同 1表示前面大 -1表示后面大
-inline int compare(const double src1, const double src2, const double tol = SINDY_ZERO)
+inline int compare(double src1, double src2, double tol = SINDY_ZERO)
 {
     double dblSub = src1 - src2;
     if (getAbs(dblSub) <= tol)
