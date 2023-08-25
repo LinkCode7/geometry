@@ -143,7 +143,7 @@ void Box2d::moveTo(const Point2d& ptNewCenter)
     m_max += offset;
 }
 
-Point2d Box2d::centerPt() const
+Point2d Box2d::center() const
 {
     return {(m_max.x() * 0.5 + m_min.x() * 0.5), (m_max.y() * 0.5 + m_min.y() * 0.5)};
 }

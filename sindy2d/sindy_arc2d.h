@@ -7,24 +7,27 @@
 namespace sindy
 {
 /*
- * @brief 圆弧
+ * @brief 圆弧、椭圆
  * @detail 角度均采用弧度制，Point2d::kXAxis为0°位置，值大于0为逆时针，范围[-2PI, 2PI]
  */
 class Arc2d : public Geometry
 {
-    Point2d _begin;            // 起点
-    Point2d _end;              // 终点
+    Point2d _begin; // 起点
+    Point2d _end;   // 终点
+
     Point2d _center;           // 圆心
-    double  _radius     = 0.0; // 半径
+    double  _radius     = 0.0; // 半径w
+    double  _radius2    = 0.0; // 半径h
     double  _beginAngle = 0.0; // 起点角度
     double  _sweepAngle = 0.0; // 扫掠角度
 
 public:
-    Arc2d(Arc2d const&) = delete;
+    Arc2d(Arc2d const&)            = delete;
     Arc2d& operator=(Arc2d const&) = delete;
     Arc2d(Point2d const& begin, Point2d const& end, double angle);
-    Arc2d(Point2d const& center, double beginAngle, double endAngle, double radius, ClockDirection dir);
-    Arc2d(Point2d const& center, Point2d const& begin, Point2d const& end, double radius, ClockDirection dir);
+    Arc2d(Point2d const& center, double beginAngle, double endAngle, ClockDirection dir, double radius, double radius2);
+    Arc2d(Point2d const& center, Point2d const& begin, Point2d const& end, ClockDirection dir, double radius,
+          double radius2);
 
 public:
     Point2d begin() const override { return _begin; }
@@ -67,7 +70,7 @@ public:
     // 求圆弧上的点
     Point2d getPoint(double radian) const;
 
-    // 根据起点、终点、角度求圆心
+    // 根据起点、终点、夹角求圆心
     static bool getCenterPoint(Point2d const& begin, Point2d const& end, double radian, Point2d& center);
 
 public:

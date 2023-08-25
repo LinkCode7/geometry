@@ -8,5 +8,5 @@ using namespace sindy;
 
 TEST(arc, construct)
 {
-    Arc2d arc(Point2d::kOrigin, Point2d::kXAxis, Point2d::kYAxis, 1, ClockDirection::eCounterClockwise);
+    Arc2d arc(Point2d::kOrigin, Point2d::kXAxis, Point2d::kYAxis, ClockDirection::eCounterClockwise, 1, 1);
 }

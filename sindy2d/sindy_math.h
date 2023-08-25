@@ -2,9 +2,7 @@
 #define SINDY_MATH_H
 #include <vector>
 
-#include "sindy_arc2d.h"
 #include "sindy_point2d.h"
-#include "sindy_segment2d.h"
 
 using FloatType = double;
 
@@ -14,6 +12,17 @@ static const FloatType Epsilon        = Epsilon_Medium;
 
 namespace sindy
 {
+// 弧度转角度
+inline constexpr double radian2Degree(double radian)
+{
+    return (radian * 180) / PI;
+}
+// 角度转弧度
+inline constexpr double degree2Radian(double degree)
+{
+    return (degree / 180) * PI;
+}
+
 // 判断点c是否在线段ab上
 bool isPtInLine(Point2d const& a, Point2d const& b, Point2d const& c);
 // 判断两条线段是否相交

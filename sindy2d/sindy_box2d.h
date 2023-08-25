@@ -23,7 +23,7 @@ public:
     void    reset();
     void    reset(const Point2d& pt1, const Point2d& pt2);
     bool    invalid() const;
-    Point2d centerPt() const;
+    Point2d center() const;
     void    expand(double value); // 扩大或缩小(负数)包络
     void    moveTo(const Point2d& ptNewCenter);
 

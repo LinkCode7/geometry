@@ -1,5 +1,7 @@
 #ifndef SINDY_GEOMETRY_H
 #define SINDY_GEOMETRY_H
+#include <memory>
+
 #include "sindy_point2d.h"
 
 namespace sindy

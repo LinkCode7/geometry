@@ -27,22 +27,24 @@ Arc2d::Arc2d(Point2d const& begin, Point2d const& end, double radian)
         _center = begin - (direct2.scale(radius));
     }
 
-    _radius = radius;
-    _begin  = begin;
-    _end    = end;
+    _radius  = radius;
+    _radius2 = _radius;
+    _begin   = begin;
+    _end     = end;
     calculateAngle(begin.angle(_center), end.angle(_center), sweep);
 }
 
-Arc2d::Arc2d(Point2d const& center, double beginAngle, double endAngle, double radius, ClockDirection dir)
-    : _center(center), _radius(radius)
+Arc2d::Arc2d(Point2d const& center, double beginAngle, double endAngle, ClockDirection dir, double radius, double radius2)
+    : _center(center), _radius(radius2)
 {
     calculateAngle(beginAngle, endAngle, dir);
     _begin = getPoint(beginAngle);
     _end   = getPoint(endAngle);
 }
 
-Arc2d::Arc2d(Point2d const& center, Point2d const& begin, Point2d const& end, double radius, ClockDirection dir)
-    : _center(center), _radius(radius)
+Arc2d::Arc2d(Point2d const& center, Point2d const& begin, Point2d const& end, ClockDirection dir, double radius,
+             double radius2)
+    : _center(center), _radius(radius), _radius2(radius2)
 {
     calculateAngle(begin.angle(center), end.angle(center), dir);
 }
@@ -52,19 +54,19 @@ Point2d Arc2d::getPoint(double radian) const
     radian = Arc2d::normalize(radian);
 
     auto const& rx = _radius;
-    auto const& ry = _radius;
+    auto const& ry = _radius2;
 
     if (radian == RADIAN_0)
-        return _center.getAdd(_radius, 0);
+        return _center.getAdd(rx, 0);
     if (radian == RADIAN_90)
         return _center.getAdd(0, ry);
     if (radian == RADIAN_180)
-        return _center.getAdd(-_radius, 0);
+        return _center.getAdd(-rx, 0);
     if (radian == RADIAN_270)
         return _center.getAdd(0, -ry);
 
-    double        rx2 = _radius * _radius;
-    double const& ry2 = rx2;
+    double rx2 = rx * rx;
+    double ry2 = ry * ry;
 
     // 椭圆公式
     double tg  = tan(radian);
