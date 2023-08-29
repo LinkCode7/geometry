@@ -77,7 +77,6 @@ public:
 
     inline Point2d scale(double scale) const { return {_data[0] * scale, _data[1] * scale}; }
     inline double  operator*(const Point2d& pt) const { return _data[0] * pt._data[0] + _data[1] * pt._data[1]; }
-    inline double  operator*=(const Point2d& pt) const { return _data[0] * pt._data[0] + _data[1] * pt._data[1]; }
 
     inline double dot(Point2d const& pt) { return (_data[0] * pt._data[0] + _data[1] * pt._data[1]); };
 
@@ -86,6 +85,18 @@ public:
     inline static double crossProduct(const Point2d& a, const Point2d& b, const Point2d& c, const Point2d& d)
     {
         return Point2d(b - a).crossProduct(Point2d(c - d));
+    }
+
+    inline static double crossProduct(double x1, double y1, double x2, double y2) { return x1 * y2 - y1 * x2; }
+    inline static double crossProduct(double x1, double y1, double x2, double y2, double x3, double y3)
+    {
+        return crossProduct(x2 - x1, y2 - y1, x3 - x2, y3 - y2);
+    }
+
+    // 求向量ab、bc的叉乘
+    inline static double crossProduct(const Point2d& a, const Point2d& b, const Point2d& c)
+    {
+        return crossProduct(a.x(), a.y(), b.x(), b.y(), c.x(), c.y());
     }
 
     inline double length() const { return sqrt(_data[0] * _data[0] + _data[1] * _data[1]); };

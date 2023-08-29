@@ -18,14 +18,14 @@ bool compareDouble(double value1, double value2, double tol = SINDY_ZERO)
 
 namespace sindy
 {
-Box2d::Box2d() : m_min{MY_EXTENTS_MIN, MY_EXTENTS_MIN}, m_max{MY_EXTENTS_MAX, MY_EXTENTS_MAX}
+Box2d::Box2d() : _min{MY_EXTENTS_MIN, MY_EXTENTS_MIN}, _max{MY_EXTENTS_MAX, MY_EXTENTS_MAX}
 {
 }
-Box2d::Box2d(const Point2d& pt) : m_min(pt), m_max(pt)
+Box2d::Box2d(Point2d const& pt) : _min(pt), _max(pt)
 {
 }
 Box2d::Box2d(const std::initializer_list<Point2d>& list)
-    : m_min{MY_EXTENTS_MIN, MY_EXTENTS_MIN}, m_max{MY_EXTENTS_MAX, MY_EXTENTS_MAX}
+    : _min{MY_EXTENTS_MIN, MY_EXTENTS_MIN}, _max{MY_EXTENTS_MAX, MY_EXTENTS_MAX}
 {
     for (const auto& point : list)
         add(point);
@@ -33,119 +33,129 @@ Box2d::Box2d(const std::initializer_list<Point2d>& list)
 
 void Box2d::reset()
 {
-    m_min = {MY_EXTENTS_MIN, MY_EXTENTS_MIN};
-    m_max = {MY_EXTENTS_MAX, MY_EXTENTS_MAX};
+    _min = {MY_EXTENTS_MIN, MY_EXTENTS_MIN};
+    _max = {MY_EXTENTS_MAX, MY_EXTENTS_MAX};
 }
-void Box2d::reset(const Point2d& pt1, const Point2d& pt2)
+void Box2d::reset(Point2d const& pt1, Point2d const& pt2)
 {
-    m_min = pt1;
-    m_max = pt1;
+    _min = pt1;
+    _max = pt1;
     add(pt2);
 }
-void Box2d::set(const Point2d& ptMin, const Point2d& ptMax)
+void Box2d::set(Point2d const& ptMin, Point2d const& ptMax)
 {
-    m_min = ptMin;
-    m_max = ptMax;
+    _min = ptMin;
+    _max = ptMax;
 }
 
 // 建议使用前先判断有效性
 bool Box2d::invalid() const
 {
-    if (compareDouble(m_min.x(), MY_EXTENTS_MIN) && compareDouble(m_min.y(), MY_EXTENTS_MIN) &&
-        compareDouble(m_max.x(), MY_EXTENTS_MAX) && compareDouble(m_max.y(), MY_EXTENTS_MAX))
+    if (compareDouble(_min.x(), MY_EXTENTS_MIN) && compareDouble(_min.y(), MY_EXTENTS_MIN) &&
+        compareDouble(_max.x(), MY_EXTENTS_MAX) && compareDouble(_max.y(), MY_EXTENTS_MAX))
         return true;
     return false;
 }
-void Box2d::add(const Point2d& pt)
+void Box2d::add(Point2d const& pt)
 {
-    if (pt.x() < m_min.x())
-        m_min.x(pt.x());
-    if (pt.x() > m_max.x())
-        m_max.x(pt.x());
+    if (pt.x() < _min.x())
+        _min.x(pt.x());
+    if (pt.x() > _max.x())
+        _max.x(pt.x());
 
-    if (pt.y() < m_min.y())
-        m_min.y(pt.y());
-    if (pt.y() > m_max.y())
-        m_max.y(pt.y());
+    if (pt.y() < _min.y())
+        _min.y(pt.y());
+    if (pt.y() > _max.y())
+        _max.y(pt.y());
 }
-void Box2d::add(const Box2d& ext)
+void Box2d::add(Box2d const& ext)
 {
-    add(ext.m_min);
-    add(ext.m_max);
+    add(ext._min);
+    add(ext._max);
 }
-void Box2d::operator+=(const Box2d& ext)
+void Box2d::operator+=(Box2d const& ext)
 {
-    add(ext.m_min);
-    add(ext.m_max);
+    add(ext._min);
+    add(ext._max);
 }
 
-bool Box2d::inBox(const Point2d& pt) const
+bool Box2d::inBox(Point2d const& pt) const
 {
-    if (pt.x() < m_min.x() || pt.x() > m_max.x())
+    if (pt.x() < _min.x() || pt.x() > _max.x())
         return false;
-    if (pt.y() < m_min.y() || pt.y() > m_max.y())
+    if (pt.y() < _min.y() || pt.y() > _max.y())
         return false;
     return true;
 }
-bool Box2d::inBox(const Point2d& pt, double tol) const
+bool Box2d::inBox(Point2d const& pt, double tol) const
 {
-    if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
+    if (pt.x() < _min.x() - tol || pt.x() > _max.x() + tol)
         return false;
-    if (pt.y() < m_min.y() - tol || pt.y() > m_max.y() + tol)
+    if (pt.y() < _min.y() - tol || pt.y() > _max.y() + tol)
         return false;
     return true;
 }
-bool Box2d::outBox(const Point2d& pt) const
+bool Box2d::outBox(Point2d const& pt) const
 {
-    if (pt.x() < m_min.x() || pt.x() > m_max.x())
+    if (pt.x() < _min.x() || pt.x() > _max.x())
         return true;
-    if (pt.y() < m_min.y() || pt.y() > m_max.y())
+    if (pt.y() < _min.y() || pt.y() > _max.y())
         return true;
     return false;
 }
-bool Box2d::outBox(const Point2d& pt, double tol) const
+bool Box2d::outBox(Point2d const& pt, double tol) const
 {
-    if (pt.x() < m_min.x() - tol || pt.x() > m_max.x() + tol)
+    if (pt.x() < _min.x() - tol || pt.x() > _max.x() + tol)
         return true;
-    if (pt.y() < m_min.y() - tol || pt.y() > m_max.y() + tol)
+    if (pt.y() < _min.y() - tol || pt.y() > _max.y() + tol)
         return true;
     return false;
 }
-bool Box2d::outBox(const Box2d& ext) const
+bool Box2d::outBox(Box2d const& ext) const
 {
-    if (ext.m_max.x() < m_min.x() || ext.m_min.x() > m_max.x())
+    if (ext._max.x() < _min.x() || ext._min.x() > _max.x())
         return true;
-    if (ext.m_max.y() < m_min.y() || ext.m_min.y() > m_max.y())
+    if (ext._max.y() < _min.y() || ext._min.y() > _max.y())
         return true;
     return false;
 }
-bool Box2d::outBox(const Box2d& ext, double tol) const
+bool Box2d::outBox(Box2d const& ext, double tol) const
 {
-    if (ext.m_max.x() < m_min.x() - tol || ext.m_min.x() > m_max.x() + tol)
+    if (ext._max.x() < _min.x() - tol || ext._min.x() > _max.x() + tol)
         return true;
-    if (ext.m_max.y() < m_min.y() - tol || ext.m_min.y() > m_max.y() + tol)
+    if (ext._max.y() < _min.y() - tol || ext._min.y() > _max.y() + tol)
         return true;
     return false;
 }
 
 void Box2d::expand(double value)
 {
-    m_min -= value;
-    m_max += value;
+    _min -= value;
+    _max += value;
 }
 
-void Box2d::moveTo(const Point2d& ptNewCenter)
+void Box2d::moveTo(Point2d const& newCenter)
 {
-    Point2d ptCurCenter{(m_max.x() * 0.5 + m_min.x() * 0.5), (m_max.y() * 0.5 + m_min.y() * 0.5)};
-    Point2d offset(ptNewCenter.x() - ptCurCenter.x(), ptNewCenter.y() - ptCurCenter.y());
+    Point2d ptCurCenter{(_max.x() * 0.5 + _min.x() * 0.5), (_max.y() * 0.5 + _min.y() * 0.5)};
+    Point2d offset(newCenter.x() - ptCurCenter.x(), newCenter.y() - ptCurCenter.y());
 
-    m_min += offset;
-    m_max += offset;
+    _min += offset;
+    _max += offset;
 }
 
-Point2d Box2d::center() const
+Box2d Box2d::intersection(Box2d const& box) const
 {
-    return {(m_max.x() * 0.5 + m_min.x() * 0.5), (m_max.y() * 0.5 + m_min.y() * 0.5)};
+    double minX = std::max(_min.x(), box._min.x());
+    double maxX = std::min(_max.x(), box._max.x());
+    if (minX > maxX)
+        return Box2d();
+
+    double minY = std::max(_min.y(), box._min.y());
+    double maxY = std::min(_max.y(), box._max.y());
+    if (minY > maxY)
+        return Box2d();
+
+    return Box2d{Point2d(minX, minY), Point2d(maxX, maxY)};
 }
 
 } // namespace sindy

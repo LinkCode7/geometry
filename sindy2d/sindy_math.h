@@ -12,23 +12,13 @@ static const FloatType Epsilon        = Epsilon_Medium;
 
 namespace sindy
 {
-// 弧度转角度
-inline constexpr double radian2Degree(double radian)
-{
-    return (radian * 180) / PI;
-}
-// 角度转弧度
-inline constexpr double degree2Radian(double degree)
-{
-    return (degree / 180) * PI;
-}
 
 // 判断点c是否在线段ab上
 bool isPtInLine(Point2d const& a, Point2d const& b, Point2d const& c);
 // 判断两条线段是否相交
 bool isIntersect(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
-// 求两条线段的交点，可能有0,1,2个交点
-int intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d, std::vector<Point2d>& result);
+// 求线段ab和线段cd的交点，可能有0,1,2个交点
+std::vector<Point2d> intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
 
 inline bool isEqual(double val1, double val2, double epsilon)
 {
@@ -64,6 +54,32 @@ inline int compare(double src1, double src2, double tol = SINDY_ZERO)
         return 1;
     else
         return -1;
+}
+
+/*
+ * triangle
+ */
+inline double triangleArea(double x1, double y1, double x2, double y2, double x3, double y3)
+{
+    return fabs(Point2d::crossProduct(x1, y1, x2, y2, x3, y3));
+}
+inline double triangleArea(Point2d const& a, Point2d const& b, Point2d const& c)
+{
+    return triangleArea(a.x(), a.y(), b.x(), b.y(), c.x(), c.y());
+}
+// 判断点是否在三角形abc内
+bool inTriangle(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& pt);
+
+/*
+ * arc
+ */
+inline constexpr double radian2Degree(double radian)
+{
+    return (radian * 180) / PI; // 弧度转角度
+}
+inline constexpr double degree2Radian(double degree)
+{
+    return (degree / 180) * PI; // 角度转弧度
 }
 
 // true:圆弧从起点到终点是顺时针方向

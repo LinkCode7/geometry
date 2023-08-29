@@ -60,9 +60,119 @@ bool is_segment_cross(double x1, double y1, double x2, double y2, double x3, dou
     }
 }
 
-int sindy::intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d, std::vector<Point2d>& result)
+std::vector<sindy::Point2d> sindy::intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d)
 {
-    return 0;
+    // 快速判断
+    auto box = Box2d({a, b}).intersection(Box2d({c, d}));
+    if (box.invalid())
+        return {};
+
+    auto c1 = Point2d::crossProduct(c, d, a);
+    auto c2 = Point2d::crossProduct(c, d, b);
+    if (fabs(c1) < SINDY_PRECISION || fabs(c2) < SINDY_PRECISION || c1 * c2 < 0)
+    {
+    }
+    else
+    {
+        return {};
+    }
+
+    double x1 = a.x(); // line1.begin
+    double y1 = a.y();
+    double x2 = b.x(); // line1.end
+    double y2 = b.y();
+    double x3 = c.x(); // line2.begin
+    double y3 = c.y();
+    double x4 = d.x(); // line2.end
+    double y4 = d.y();
+
+    auto cross1 = Point2d::crossProduct(x1, y1, x3, y3, x4, y4);
+    auto cross2 = Point2d::crossProduct(x2, y2, x3, y3, x4, y4);
+    if (cross1 * cross2 > 0 && compare(cross1, 0.0, SINDY_PRECISION) != 0 && compare(cross2, 0.0, SINDY_PRECISION) != 0)
+        return {};
+
+    auto cross3 = Point2d::crossProduct(x3, y3, x1, y1, x2, y2);
+    auto cross4 = Point2d::crossProduct(x4, y4, x1, y1, x2, y2);
+    if (cross3 * cross4 > 0 && compare(cross3, 0.0, SINDY_PRECISION) != 0 && compare(cross4, 0.0, SINDY_PRECISION) != 0)
+        return {};
+
+    std::vector<sindy::Point2d> result;
+
+    int cmp1 = compare(cross1, 0.0, SINDY_PRECISION);
+    int cmp2 = compare(cross2, 0.0, SINDY_PRECISION);
+    if (cmp1 == 0 && cmp2 == 0) // 重合
+    {
+        auto width  = box.width();
+        auto height = box.height();
+        if (width == 0 && height == 0)
+        {
+            result.emplace_back(box.leftUp());
+        }
+        else if (width == 0)
+        {
+            result.emplace_back(box.leftUp());
+            result.emplace_back(box.leftDown());
+        }
+        else if (height == 0)
+        {
+            result.emplace_back(box.leftUp());
+            result.emplace_back(box.rightUp());
+        }
+        else
+        {
+            auto areaLeftUp  = triangleArea(box.leftUp(), c, d);
+            auto areaRightUp = triangleArea(box.rightUp(), c, d);
+            if (areaLeftUp < areaRightUp)
+            {
+                result.emplace_back(box.leftUp());
+                result.emplace_back(box.rightDown());
+            }
+            else
+            {
+                result.emplace_back(box.rightUp());
+                result.emplace_back(box.leftDown());
+            }
+        }
+    }
+    else if (cmp1 == 0) // 端点处相交
+    {
+        result.emplace_back(a);
+    }
+    else if (cmp2 == 0) // 端点处相交
+    {
+        result.emplace_back(b);
+    }
+    else // 常规情况，非端点相交，非重合
+    {
+        auto nextRatio = fabs(cross1 / (cross1 - cross2));
+        result.emplace_back(Point2d(x1 + (x2 - x1) * nextRatio, y1 + (y2 - y1) * nextRatio));
+    }
+
+    return result;
+}
+
+bool sindy::inTriangle(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& pt)
+{
+    Point2d v0 = c - a;
+    Point2d v1 = b - a;
+    Point2d v2 = pt - a;
+
+    double dot00 = v0 * v0;
+    double dot01 = v0 * v1;
+    double dot02 = v0 * v2;
+    double dot11 = v1 * v1;
+    double dot12 = v1 * v2;
+
+    double inverDeno = 1 / (dot00 * dot01 - dot01 * dot01);
+    double u         = (dot11 * dot02 - dot01 * dot12);
+    if (u < 0 || u > 1)
+        return false;
+
+    double v = (dot00 * dot12 - dot01 * dot02) * inverDeno;
+    if (v < 0 || v > 1)
+        return false;
+
+    return u + v <= 1;
 }
 
 bool sindy::isArcClockwise(Point2d const& begin, Point2d const& end, Point2d const& center)
