@@ -13,7 +13,10 @@ public:
 
 public:
     virtual Point2d begin() const  = 0;
+    virtual Point2d end() const    = 0;
     virtual double  length() const = 0;
+
+    virtual std::vector<Point2d> segment(double unitLength) const = 0;
 };
 using GeometrySp = std::shared_ptr<Geometry>;
 

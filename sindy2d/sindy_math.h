@@ -13,27 +13,18 @@ static const FloatType Epsilon        = Epsilon_Medium;
 namespace sindy
 {
 
-// 判断点c是否在线段ab上
-bool isPtInLine(Point2d const& a, Point2d const& b, Point2d const& c);
-// 判断两条线段是否相交
-bool isIntersect(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
-// 求线段ab和线段cd的交点，可能有0,1,2个交点
-std::vector<Point2d> intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
-
-inline bool isEqual(double val1, double val2, double epsilon)
+inline bool equal(double val1, double val2, double epsilon)
 {
     double diff = val1 - val2;
-
 #ifdef _DEBUG
     assert(((-epsilon <= diff) && (diff <= epsilon)) == (abs(diff) <= epsilon));
 #endif
-
     return ((-epsilon <= diff) && (diff <= epsilon));
 }
 
 inline bool lessThanOrEqual(double val1, double val2, double epsilon = Epsilon)
 {
-    return (val1 < val2) || isEqual(val1, val2, epsilon);
+    return (val1 < val2) || equal(val1, val2, epsilon);
 }
 
 inline double getAbs(double dValue)
@@ -55,6 +46,23 @@ inline int compare(double src1, double src2, double tol = SINDY_ZERO)
     else
         return -1;
 }
+
+// 四舍五入
+double roundFloat(double value, uint8_t num);
+
+// 四舍五入并去除尾部无效的0
+std::string simplifyFloat(double value, uint8_t num);
+// 去除尾部的0，"1.4142100" -> "1.41421"
+void trimInvalid0(std::string& strFloat);
+
+uint64_t powTen(uint8_t num);
+
+// 判断点c是否在线段ab上
+bool isPtInLine(Point2d const& a, Point2d const& b, Point2d const& c);
+// 判断两条线段是否相交
+bool isIntersect(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
+// 求线段ab和线段cd的交点，可能有0,1,2个交点
+std::vector<Point2d> intersection(Point2d const& a, Point2d const& b, Point2d const& c, Point2d const& d);
 
 /*
  * triangle
@@ -84,6 +92,9 @@ inline constexpr double degree2Radian(double degree)
 
 // true:圆弧从起点到终点是顺时针方向
 bool isArcClockwise(Point2d const& begin, Point2d const& end, Point2d const& center);
+
+// true:多边形点集是顺时针方向
+bool isPolyClockwise(std::vector<Point2d> const& pts);
 
 } // namespace sindy
 

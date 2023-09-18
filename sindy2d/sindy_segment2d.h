@@ -25,10 +25,12 @@ public:
     Point2d begin() const override { return _begin; }
     void    begin(Point2d const& value) { _begin = value; }
 
-    Point2d end() const { return _end; }
+    Point2d end() const override { return _end; }
     void    end(Point2d const& value) { _end = value; }
 
     double length() const override { return (_begin - _end).length(); }
+
+    std::vector<Point2d> segment(double unitLength) const override;
 
 public:
     int intersection(Segment2d const& seg, std::vector<Point2d>& result) const;

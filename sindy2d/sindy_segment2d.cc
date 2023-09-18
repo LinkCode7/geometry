@@ -14,4 +14,10 @@ int Segment2d::intersection(Arc2d const& arc, std::vector<Point2d>& result) cons
     return 0;
 }
 
+std::vector<Point2d> Segment2d::segment(double unitLength) const
+{
+    std::vector<Point2d> result;
+    return result;
+}
+
 } // namespace sindy

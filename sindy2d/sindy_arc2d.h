@@ -22,7 +22,7 @@ class Arc2d : public Geometry
     double  _sweepAngle = 0.0; // 扫掠角度
 
 public:
-    Arc2d(Arc2d const&)            = delete;
+    Arc2d(Arc2d const&) = delete;
     Arc2d& operator=(Arc2d const&) = delete;
     Arc2d(Point2d const& begin, Point2d const& end, double angle);
     Arc2d(Point2d const& center, double beginAngle, double endAngle, ClockDirection dir, double radius, double radius2);
@@ -33,7 +33,7 @@ public:
     Point2d begin() const override { return _begin; }
     void    begin(Point2d const& value) { _begin = value; }
 
-    Point2d end() const { return _end; }
+    Point2d end() const override { return _end; }
     void    end(Point2d const& value) { _end = value; }
 
     Point2d center() const { return _center; }
@@ -57,7 +57,9 @@ public:
     bool isCCW() const { return _sweepAngle >= 0.0; }
 
 public:
-    double length() const override { return (_begin - _end).length(); }
+    double length() const override { return (2 * PI * _radius) * (fabs(_sweepAngle) / RADIAN_360); }
+
+    std::vector<Point2d> segment(double unitLength) const override;
 
     static inline double normalize(double radian)
     {
